@@ -171,7 +171,7 @@ MonoBehaviour:
   crouchSpeedRatio: 0.75
   extraJumps: 0
   maxJumpHoldTime: 0.12
-  jumpBufferedCounterMax: 0.05
+  jumpBufferedCounterMax: 0.1
   terminalVelocity: 100
 --- !u!23 &44304675
 MeshRenderer:
@@ -231,8 +231,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 44304672}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.94923, y: 9.1, z: -0.51582}
-  m_LocalScale: {x: 4.195735, y: 5.2588067, z: 6.723745}
+  m_LocalPosition: {x: -0.94923, y: 9.1, z: 0.10735}
+  m_LocalScale: {x: 4.195735, y: 5.2588067, z: 4.7195983}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1044916698}

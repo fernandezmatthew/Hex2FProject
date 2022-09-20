@@ -153,7 +153,7 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
     }
 
     public virtual bool IsGrounded() {
-        float heightThreshold = 1.6f + controller.skinWidth;
+        float heightThreshold = .2f + controller.skinWidth;
         if (playerVelocity.y > 0) {
             return false;
         }
