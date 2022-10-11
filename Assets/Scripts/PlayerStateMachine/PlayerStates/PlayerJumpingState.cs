@@ -33,7 +33,9 @@ public class PlayerJumpingState : PlayerBaseState {
 
         //Disable collision with platforms while in jumping state
         ctx.Controller.enableOverlapRecovery = false;
-        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("WaterPlayer"), LayerMask.NameToLayer("WaterSurface"), true);
+        if (ctx.IsSwimmer) {
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("WaterPlayer"), LayerMask.NameToLayer("WaterSurface"), true);
+        }
     }
 
     public override void UpdateState() {

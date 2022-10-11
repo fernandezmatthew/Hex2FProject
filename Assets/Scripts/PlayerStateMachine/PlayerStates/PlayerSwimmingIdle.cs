@@ -24,7 +24,9 @@ public class PlayerSwimmingIdleState : PlayerBaseState {
 
         // Make gravity 0
         ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, 0, ctx.PlayerVelocity.z);
-        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("WaterPlayer"), LayerMask.NameToLayer("WaterSurface"), false);
+        if (ctx.IsSwimmer) {
+            Physics.IgnoreLayerCollision(LayerMask.NameToLayer("WaterPlayer"), LayerMask.NameToLayer("WaterSurface"), false);
+        }
         ctx.CurrentPlayerSpeed = ctx.PlayerSwimSpeed;
     }
 
