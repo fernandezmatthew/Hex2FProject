@@ -17,6 +17,7 @@ public class PlayerStateMachineProto : PlayerStateMachineBase
         // These lines seems very out of place here
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("LandPlayer"), LayerMask.NameToLayer("WaterSurface"), true);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("WaterPlayer"), LayerMask.NameToLayer("WaterSurface2"), true);
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("WaterPlayer"), LayerMask.NameToLayer("LandPlayer"), true);
 
         currentPlayerState.EnterState();
     }
