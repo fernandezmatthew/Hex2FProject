@@ -25,6 +25,7 @@ public class PlayerJumpingState : PlayerBaseState {
 
         //Disable collision with platforms while in jumping state
         ctx.Controller.enableOverlapRecovery = false;
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("WaterPlayer"), LayerMask.NameToLayer("WaterSurface"), true);
     }
 
     public override void UpdateState() {
@@ -36,9 +37,8 @@ public class PlayerJumpingState : PlayerBaseState {
         else {
             ctx.UnchangedMove = Vector3.zero;
         }
-        ctx.Move = ctx.SetMoveRelativeToCamera();
-        ctx.UpdateRotation();
-        ctx.UpdateGravity();
+        ctx.Move = ctx.UnchangedMove;
+        UpdateGravity();
 
         MovePlayer();
 
@@ -86,6 +86,7 @@ public class PlayerJumpingState : PlayerBaseState {
 
     public override void ExitState() {
         ctx.CurrentGravityValue = ctx.BaseGravityValue;
+        ctx.Controller.enableOverlapRecovery = true;
     }
 
     public override void CheckSwitchStates() {
@@ -99,8 +100,21 @@ public class PlayerJumpingState : PlayerBaseState {
 
     //Non-State Machine related Functions
     private void MovePlayer() {
-        if (ctx.Move != Vector3.zero) {
-            ctx.Controller.Move(ctx.transform.forward * Time.deltaTime * ctx.CurrentPlayerSpeed * ctx.AirSpeedRatio);
+        if (ctx.Move.x < 0) {
+            ctx.Controller.Move(Vector3.left * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed * ctx.AirSpeedRatio);
         }
+        else if (ctx.Move.x > 0) {
+            ctx.Controller.Move(Vector3.right * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed * ctx.AirSpeedRatio);
+        }
+        else {
+            ctx.Controller.Move(Vector3.zero);
+        }
+    }
+
+    private void UpdateGravity() {
+        if (ctx.PlayerVelocity.y > -1f * ctx.TerminalVelocity) {
+            ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, ctx.PlayerVelocity.y + ctx.CurrentGravityValue * Time.deltaTime, ctx.PlayerVelocity.z);
+        }
+        ctx.Controller.Move(ctx.PlayerVelocity * Time.deltaTime);
     }
 }

@@ -25,9 +25,8 @@ public class PlayerFallingState : PlayerBaseState
         else {
             ctx.UnchangedMove = Vector3.zero;
         }
-        ctx.Move = ctx.SetMoveRelativeToCamera();
-        ctx.UpdateRotation();
-        ctx.UpdateGravity();
+        ctx.Move = ctx.UnchangedMove;
+        UpdateGravity();
 
         MovePlayer();
         ctx.JumpBufferedCounter -= Time.deltaTime;
@@ -56,12 +55,35 @@ public class PlayerFallingState : PlayerBaseState
             ctx.PlayerVelocity = new Vector3(oldVelocity.x, -50f, oldVelocity.z);
             SwitchState(factory.Idle());
         }
+        else if (ctx.IsSwimmer) {
+            if (ctx.BelowSurface()) {
+                SwitchState(factory.SwimmingIdle());
+            }
+        }
+        else if (!ctx.IsSwimmer) {
+            if (ctx.AboveSurface()) {
+                SwitchState(factory.FloatingIdle());
+            }
+        }
     }
 
     //Non-State Machine related Functions
     private void MovePlayer() {
-        if (ctx.Move != Vector3.zero) {
-            ctx.Controller.Move(ctx.transform.forward * Time.deltaTime * ctx.CurrentPlayerSpeed * ctx.AirSpeedRatio);
+        if (ctx.Move.x < 0) {
+            ctx.Controller.Move(Vector3.left * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed * ctx.AirSpeedRatio);
         }
+        else if (ctx.Move.x > 0) {
+            ctx.Controller.Move(Vector3.right * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed * ctx.AirSpeedRatio);
+        }
+        else {
+            ctx.Controller.Move(Vector3.zero);
+        }
+    }
+
+    private void UpdateGravity() {
+        if (ctx.PlayerVelocity.y > -1f * ctx.TerminalVelocity) {
+            ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, ctx.PlayerVelocity.y + ctx.CurrentGravityValue * Time.deltaTime, ctx.PlayerVelocity.z);
+        }
+        ctx.Controller.Move(ctx.PlayerVelocity * Time.deltaTime);
     }
 }

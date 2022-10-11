@@ -2,29 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerRunningState : PlayerBaseState {
+public class PlayerFloatingState : PlayerBaseState {
 
-    /*protected float fallTimeRequired = .2f;
-    protected bool notGroundedTimerStarted = false;
-    protected float notGroundedStartTime = 0f;
-    protected bool notGroundedTimerFinished = false;*/
-
-    public PlayerRunningState(PlayerStateMachineBase currentContext, PlayerStateFactory playerStateFactory)
+    public PlayerFloatingState(PlayerStateMachineBase currentContext, PlayerStateFactory playerStateFactory)
     : base(currentContext, playerStateFactory) {
 
     }
 
     public override void EnterState() {
-        ctx.EPlayerState = EPlayerState.Running;
-        //Debug.Log("Hello from the Running State");
+        ctx.EPlayerState = EPlayerState.Floating;
+        //Debug.Log("Hello from the Floating State");
 
         ctx.Controller.enableOverlapRecovery = true;
         ctx.ExtraJumpsLeft = ctx.ExtraJumps; //Reset our extra jumps count
         ctx.Controller.stepOffset = ctx.OriginalStepOffset;
+
+        // Make gravity 0
+        ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, 0, ctx.PlayerVelocity.z);
+        ctx.CurrentPlayerSpeed = ctx.PlayerSwimSpeed;
+        ctx.transform.rotation = Quaternion.Euler(0f, 0f, 90f);
     }
 
     public override void UpdateState() {
-        //Debug.Log("We Running");
+        //Debug.Log("We Floating");
 
         /*if (ctx.PlayerVelocity.y < -9f) {
             Vector3 oldVelocity = ctx.PlayerVelocity;
@@ -37,40 +37,29 @@ public class PlayerRunningState : PlayerBaseState {
             ctx.UnchangedMove = Vector3.zero;
         }
         ctx.Move = ctx.UnchangedMove;
-        UpdateGravity();
         MovePlayer();
 
         CheckSwitchStates();
     }
 
     public override void ExitState() {
-
+        ctx.CurrentPlayerSpeed = ctx.BasePlayerSpeed;
+        ctx.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
     }
 
     public override void CheckSwitchStates() {
         if (Input.GetButtonDown("Jump")) { //jump if pressed
-            if (Time.time > ctx.NextJumpTime) {
+            // Need to cast up and see if we are close enough to the surface to jump from the water
+            /*if (Time.time > ctx.NextJumpTime) {
                 SwitchState(factory.Jumping());
-            }
+            }*/
         }
         else if (ctx.JumpBufferedCounter > 0f) { //jumpo if buffered
-            SwitchState(factory.Jumping());
+            // Need to cast up and see if we are close enough to the surface to jump from the water
+            //SwitchState(factory.Jumping());
         }
-        else if (!ctx.IsGrounded()) { //chgange to falling
-            /*if (!notGroundedTimerStarted) {
-                notGroundedTimerStarted = true;
-                notGroundedStartTime = Time.time;
-            }
-            else {
-                if (Time.time - notGroundedStartTime >= fallTimeRequired) {
-                    Debug.Log("Timer Finished!");
-                    SwitchState(factory.Falling());
-                }
-            }*/
-            SwitchState(factory.Falling());
-        }
-        else if (ctx.Move == Vector3.zero) { //switch to idle
-            SwitchState(factory.Idle());
+        else if (ctx.Move == Vector3.zero) { //switch to floating idle
+            SwitchState(factory.FloatingIdle());
         }
         else {
             //notGroundedTimerStarted = false;
@@ -79,20 +68,19 @@ public class PlayerRunningState : PlayerBaseState {
 
     //Non-State Machine related Functions
     private void MovePlayer() {
-        // make character turn here
-        if (ctx.Move.x < 0) {
-            ctx.Controller.Move(Vector3.left * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed);
+        if (Input.GetButtonDown("Jump") || ctx.JumpBufferedCounter > 0f) { //jump if pressed
+            if (Time.time > ctx.NextJumpTime) {
+                SwitchState(factory.Jumping());
+            }
         }
         else if (ctx.Move.x > 0) {
             ctx.Controller.Move(Vector3.right * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed);
         }
+        else if (ctx.Move.x < 0) {
+            ctx.Controller.Move(Vector3.left * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed);
+        }
         else {
             ctx.Controller.Move(Vector3.zero);
         }
-    }
-
-    private void UpdateGravity() {
-        ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, -9f, ctx.PlayerVelocity.z);
-        ctx.Controller.Move(ctx.PlayerVelocity * Time.deltaTime);
     }
 }

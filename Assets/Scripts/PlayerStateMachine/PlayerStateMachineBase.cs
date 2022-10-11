@@ -13,7 +13,9 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
     protected Animator anim;
 
     //Visible Variables (Movement)
+    [SerializeField] protected bool isSwimmer = false;
     [SerializeField] protected float basePlayerSpeed = 12f;
+    [SerializeField] protected float playerSwimSpeed = 12f;
     [SerializeField] protected float gravityScale = 8f; //Strength of gravity on this object
     [SerializeField] protected bool holdJump = false;
     [SerializeField] protected float jumpHeight = 8f;
@@ -84,7 +86,9 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
     public Vector3 Move { get { return move; } set { move = value; } }
     public Vector3 UnchangedMove { get { return unchangedMove; } set { unchangedMove = value; } }
     public CharacterController Controller { get { return controller; } set { controller = value; } }
+    public float BasePlayerSpeed { get { return basePlayerSpeed; } set { basePlayerSpeed = value; } }
     public float CurrentPlayerSpeed { get { return currentPlayerSpeed; } set { currentPlayerSpeed = value; } }
+    public float PlayerSwimSpeed { get { return playerSwimSpeed; } set { playerSwimSpeed = value; } }
     public float AirSpeedRatio { get { return airSpeedRatio; } set { airSpeedRatio = value; } }
     public Vector3 PlayerVelocity { get { return playerVelocity; } set { playerVelocity = value; } }
     public int ExtraJumpsLeft { get { return extraJumpsLeft; } set { extraJumpsLeft = value; } }
@@ -101,6 +105,8 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
     public float MaxJumpHoldTime { get { return maxJumpHoldTime; } set { maxJumpHoldTime = value; } }
     public bool HoldJump { get { return holdJump; } set { holdJump = value; } }
     public float RunThreshold { get { return runThreshold; } set { runThreshold = value; } }
+    public float TerminalVelocity { get { return terminalVelocity; } set { terminalVelocity = value; } }
+    public bool IsSwimmer {get { return isSwimmer; } set { isSwimmer = value; } }
 
     protected virtual void Awake() {
         //Grab References
@@ -163,7 +169,6 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
         bool hit = false;
 
         if (groundedLayers != LayerMask.GetMask("Nothing")) {
-            hit =
             //Center
             hits[0] = Physics.Raycast(controller.bounds.center, Vector3.down, controller.bounds.extents.y + heightThreshold, groundedLayers);
             //Center of sides
@@ -282,16 +287,30 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
         return anyHits;
     }
 
-    public void SetParent() {
+    public virtual bool BelowSurface() {
+        float heightThreshold = .2f + controller.skinWidth;
 
+        if (Physics.Raycast(controller.bounds.center + controller.bounds.extents, Vector3.up, controller.bounds.extents.y + heightThreshold, LayerMask.GetMask("WaterSurface"))) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
-    public void UpdateGravity() {
-        //Implementing a terminal velocity cuz i think itll feel better
-        if (playerVelocity.y > -1f * terminalVelocity) {
-            playerVelocity.y += currentGravityValue * Time.deltaTime;
+    public virtual bool AboveSurface() {
+        float heightThreshold = .2f + controller.skinWidth;
+
+        if (Physics.Raycast(controller.bounds.center, Vector3.down, controller.bounds.extents.y + heightThreshold, LayerMask.GetMask("WaterSurface2"))) {
+            return true;
         }
-        controller.Move(playerVelocity * Time.deltaTime);
+        else {
+            return false;
+        }
+    }
+
+    public void SetParent() {
+
     }
 
     public Vector3 SetMoveRelativeToCamera() {
@@ -307,7 +326,7 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
     }
 
     public Vector3 GetMoveInput() {
-        return new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        return new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0);
     }
 
     public void UpdateRotation() {
