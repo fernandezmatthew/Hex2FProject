@@ -19,6 +19,7 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
     [SerializeField] protected float gravityScale = 8f; //Strength of gravity on this object
     [SerializeField] protected bool holdJump = false;
     [SerializeField] protected float jumpHeight = 8f;
+    [SerializeField] protected float swimJumpHeight = 8f;
     [SerializeField] protected float airSpeedRatio = .75f; //Decreases player speed in the air
     [SerializeField] protected float crouchSpeedRatio = .75f; //Decreases player speed while crouched
     [SerializeField] protected int extraJumps = 0;
@@ -98,6 +99,7 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
     public bool AbilityInputEnabled { get { return abilityInputEnabled; } set { abilityInputEnabled = value; } }
     public float NextJumpTime { get { return nextJumpTime; } set { nextJumpTime = value; } }
     public float JumpHeight { get { return jumpHeight; } set { jumpHeight = value; } }
+    public float SwimJumpHeight { get { return swimJumpHeight; } set { swimJumpHeight = value; } }
     public float BaseGravityValue { get { return baseGravityValue; } set { baseGravityValue = value; } }
     public float CurrentGravityValue { get { return currentGravityValue; } set { currentGravityValue = value; } }
     public float JumpRate { get { return jumpRate; } set { jumpRate = value; } }

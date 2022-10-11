@@ -5,9 +5,17 @@ using UnityEngine;
 public class PlayerJumpingState : PlayerBaseState {
 
     bool jumpButtonHeld;
+    float jumpHeight;
     public PlayerJumpingState(PlayerStateMachineBase currentContext, PlayerStateFactory playerStateFactory)
     : base(currentContext, playerStateFactory) {
         jumpButtonHeld = true;
+        jumpHeight = ctx.JumpHeight;
+    }
+
+    public PlayerJumpingState(PlayerStateMachineBase currentContext, PlayerStateFactory playerStateFactory, float customJumpHeight)
+    : base(currentContext, playerStateFactory) {
+        jumpButtonHeld = true;
+        jumpHeight = customJumpHeight;
     }
 
     public override void EnterState() {
@@ -18,7 +26,7 @@ public class PlayerJumpingState : PlayerBaseState {
         ctx.CurrentGravityValue = ctx.BaseGravityValue * 8f;
         ctx.JumpBufferedCounter = 0f;
         Vector3 oldVelocity = ctx.PlayerVelocity;
-        ctx.PlayerVelocity = new Vector3(oldVelocity.x, Mathf.Sqrt(ctx.JumpHeight * -3.0f * ctx.BaseGravityValue), oldVelocity.z);
+        ctx.PlayerVelocity = new Vector3(oldVelocity.x, Mathf.Sqrt(jumpHeight * -3.0f * ctx.BaseGravityValue), oldVelocity.z);
         ctx.NextJumpTime = Time.time + (1f / ctx.JumpRate); //Sets the next time we should be able to jump
         ctx.JumpHoldTimeCounter = ctx.MaxJumpHoldTime;
         //Debug.Log("Jumped");
@@ -55,7 +63,7 @@ public class PlayerJumpingState : PlayerBaseState {
                 if (ctx.ExtraJumpsLeft > 0) {
                     Vector3 oldVelocity = ctx.PlayerVelocity;
                     //reset velocity so that this jump will have the same velocity as the original jump
-                    ctx.PlayerVelocity = new Vector3(oldVelocity.x, Mathf.Sqrt(ctx.JumpHeight * -3.0f * ctx.BaseGravityValue), oldVelocity.z);
+                    ctx.PlayerVelocity = new Vector3(oldVelocity.x, Mathf.Sqrt(jumpHeight * -3.0f * ctx.BaseGravityValue), oldVelocity.z);
                     ctx.ExtraJumpsLeft -= 1;
                     ctx.NextJumpTime = Time.time + (1f / ctx.JumpRate); //Sets the next time we should be able to jump
                     ctx.JumpHoldTimeCounter = ctx.MaxJumpHoldTime;
@@ -71,7 +79,7 @@ public class PlayerJumpingState : PlayerBaseState {
                 if (ctx.JumpHoldTimeCounter > 0) {
                     Vector3 oldVelocity = ctx.PlayerVelocity;
                     //reset velocity so that this jump will have the same velocity as the original jump
-                    ctx.PlayerVelocity = new Vector3(oldVelocity.x, Mathf.Sqrt(ctx.JumpHeight * -3.0f * ctx.BaseGravityValue), oldVelocity.z);
+                    ctx.PlayerVelocity = new Vector3(oldVelocity.x, Mathf.Sqrt(jumpHeight * -3.0f * ctx.BaseGravityValue), oldVelocity.z);
                     ctx.JumpHoldTimeCounter -= Time.deltaTime;
                 }
                 else {
@@ -90,6 +98,7 @@ public class PlayerJumpingState : PlayerBaseState {
     }
 
     public override void CheckSwitchStates() {
+        // myabe we can just start a new instance of the jump state?
         if (ctx.IsGrounded()) {
             SwitchState(factory.Idle());
         }

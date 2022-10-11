@@ -70,7 +70,7 @@ public class PlayerFloatingState : PlayerBaseState {
     private void MovePlayer() {
         if (Input.GetButtonDown("Jump") || ctx.JumpBufferedCounter > 0f) { //jump if pressed
             if (Time.time > ctx.NextJumpTime) {
-                SwitchState(factory.Jumping());
+                SwitchState(factory.Jumping(ctx.SwimJumpHeight));
             }
         }
         else if (ctx.Move.x > 0) {

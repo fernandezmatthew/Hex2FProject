@@ -26,6 +26,10 @@ public class PlayerStateFactory {
         //used a third parameter "isJumpButtonDown" in first version
         return new PlayerJumpingState(context, this);
     }
+    public PlayerBaseState Jumping(float customJumpHeight) {
+        //used a third parameter "isJumpButtonDown" in first version
+        return new PlayerJumpingState(context, this, customJumpHeight);
+    }
     public PlayerBaseState Walking() {
         return new PlayerWalkingState(context, this);
     }

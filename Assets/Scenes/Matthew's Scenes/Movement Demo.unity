@@ -332,7 +332,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 481924205}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ebebe53a81fcf3941a5a40c7c951a4e8, type: 3}
   m_Name: 
@@ -350,6 +350,7 @@ MonoBehaviour:
   gravityScale: 6
   holdJump: 1
   jumpHeight: 1
+  swimJumpHeight: 3
   airSpeedRatio: 0.75
   crouchSpeedRatio: 0.75
   extraJumps: 0
@@ -632,7 +633,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1114236017}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ebebe53a81fcf3941a5a40c7c951a4e8, type: 3}
   m_Name: 
@@ -650,6 +651,7 @@ MonoBehaviour:
   gravityScale: 6
   holdJump: 1
   jumpHeight: 2
+  swimJumpHeight: 1
   airSpeedRatio: 0.75
   crouchSpeedRatio: 0.75
   extraJumps: 0
