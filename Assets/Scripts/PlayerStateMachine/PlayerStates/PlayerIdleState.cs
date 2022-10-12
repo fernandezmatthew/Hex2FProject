@@ -47,10 +47,11 @@ public class PlayerIdleState : PlayerBaseState {
     }
 
     public override void CheckSwitchStates() {
-        if (Input.GetButtonDown("Jump") || ctx.JumpBufferedCounter > 0f) { //jump if pressed
+        if (ctx.InputJumpButtonPressed || ctx.JumpBufferedCounter > 0f) { //jump if pressed
             if (Time.time > ctx.NextJumpTime) {
                 SwitchState(factory.Jumping());
             }
+            ctx.InputJumpButtonPressed = false;
         }
         else if (!ctx.IsGrounded()) { //chgange to falling
             SwitchState(factory.Falling());

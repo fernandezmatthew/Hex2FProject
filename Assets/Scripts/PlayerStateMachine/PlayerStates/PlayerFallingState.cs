@@ -39,7 +39,7 @@ public class PlayerFallingState : PlayerBaseState
     }
 
     public override void CheckSwitchStates() {
-        if (Input.GetButtonDown("Jump")) {
+        if (ctx.InputJumpButtonPressed) {
             if (Time.time > ctx.NextJumpTime) {
                 if (ctx.ExtraJumpsLeft > 0) {
                     ctx.ExtraJumpsLeft -= 1;
@@ -48,6 +48,7 @@ public class PlayerFallingState : PlayerBaseState
                 else {
                     ctx.JumpBufferedCounter = ctx.JumpBufferedCounterMax;
                 }
+                ctx.InputJumpButtonPressed = false;
             }
         }
         else if (ctx.IsGrounded()) {
@@ -82,8 +83,12 @@ public class PlayerFallingState : PlayerBaseState
 
     private void UpdateGravity() {
         if (ctx.PlayerVelocity.y > -1f * ctx.TerminalVelocity) {
-            ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, ctx.PlayerVelocity.y + ctx.CurrentGravityValue * Time.deltaTime, ctx.PlayerVelocity.z);
+            //Going to try to use Velocity Verlet here
+            float previousYVelocity = ctx.PlayerVelocity.y;
+            float newYVelocity = ctx.PlayerVelocity.y + ctx.CurrentGravityValue * Time.deltaTime;
+            float nextYVelocity = (previousYVelocity + newYVelocity) * .5f;
+            ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, nextYVelocity, ctx.PlayerVelocity.z);
         }
-        ctx.Controller.Move(ctx.PlayerVelocity * Time.deltaTime);
+        ctx.Controller.Move(ctx.PlayerVelocity * Time.deltaTime); ;
     }
 }
