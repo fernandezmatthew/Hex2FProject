@@ -145,7 +145,11 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
 
         //References
         controller = gameObject.GetComponent<CharacterController>(); //would like to disable the capsule connected to this
-        anim = GetComponent<Animator>();
+        anim = GetComponentInChildren<Animator>();
+        /*anim = GetComponent<Animator>();
+        if (anim == null) {
+            anim = GetComponentInChildren<Animator>();
+        }*/
 
         //State Machine
         ePlayerState = EPlayerState.Default;

@@ -25,7 +25,7 @@ public class PlayerFloatingIdleState : PlayerBaseState {
         // Make gravity 0
         ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, 0, ctx.PlayerVelocity.z);
         ctx.CurrentPlayerSpeed = ctx.PlayerSwimSpeed;
-        ctx.transform.rotation = Quaternion.Euler(0f, 0f, 90f);
+        //ctx.transform.rotation = Quaternion.Euler(0f, 0f, 90f);
     }
 
     public override void UpdateState() {

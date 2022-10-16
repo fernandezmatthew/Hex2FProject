@@ -32,7 +32,8 @@ public class PlayerStateMachineProto : PlayerStateMachineBase
         Debug.DrawRay(controller.bounds.center, Vector3.down * (controller.bounds.extents.y + heightThreshold), Color.green);*/
 
         //Set current animation
-        //anim.SetInteger("playerState", (int)ePlayerState);
+        anim.SetInteger("eMoveState", (int)ePlayerState);
+        //Debug.Log("Sent a: " + (int)ePlayerState);
 
         /*float rotateCamX = Input.GetAxisRaw("RotateCamX");
         float rotateCamY = Input.GetAxisRaw("RotateCamY");
