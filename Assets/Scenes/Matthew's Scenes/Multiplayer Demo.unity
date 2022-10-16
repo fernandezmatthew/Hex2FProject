@@ -739,7 +739,7 @@ MonoBehaviour:
   minJumpHeight: 2
   maxJumpDuration: 0.6
   minJumpHoldTime: 0.075
-  swimJumpScalar: 0.5
+  swimJumpScalar: 0.75
   airSpeedRatio: 0.75
   crouchSpeedRatio: 0.75
   extraJumps: 0
@@ -809,7 +809,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1173536107}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe4d04663a790874db1776ddc31d544f, type: 3}
   m_Name: 
