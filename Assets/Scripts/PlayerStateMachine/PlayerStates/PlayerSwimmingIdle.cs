@@ -52,7 +52,7 @@ public class PlayerSwimmingIdleState : PlayerBaseState {
             // Need to cast up and see if we are close enough to the surface to jump from the water
             if (ctx.BelowSurface()) {
                 if (Time.time > ctx.NextJumpTime) {
-                    SwitchState(factory.Jumping(ctx.SwimJumpHeight));
+                    SwitchState(factory.Jumping(ctx.SwimJumpScalar));
                 }
             }
             ctx.InputJumpButtonPressed = false;

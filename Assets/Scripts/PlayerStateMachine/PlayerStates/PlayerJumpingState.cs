@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class PlayerJumpingState : PlayerBaseState {
 
-    float jumpHeight;
+    float jumpVelocity;
 
     public PlayerJumpingState(PlayerStateMachineBase currentContext, PlayerStateFactory playerStateFactory)
     : base(currentContext, playerStateFactory) {
-        jumpHeight = ctx.JumpHeight;
+        jumpVelocity = ctx.InitialJumpVelocity;
     }
 
-    public PlayerJumpingState(PlayerStateMachineBase currentContext, PlayerStateFactory playerStateFactory, float customJumpHeight)
+    public PlayerJumpingState(PlayerStateMachineBase currentContext, PlayerStateFactory playerStateFactory, float initialJumpVelocityMultiplier)
     : base(currentContext, playerStateFactory) {
-        jumpHeight = customJumpHeight;
+        jumpVelocity = ctx.InitialJumpVelocity * Mathf.Sqrt(initialJumpVelocityMultiplier);
     }
 
     public override void EnterState() {
@@ -21,15 +21,20 @@ public class PlayerJumpingState : PlayerBaseState {
         //Debug.Log("Hello from the Jumping State");
 
         ctx.Controller.stepOffset = 0f;
-        ctx.CurrentGravityValue = ctx.BaseGravityValue * 8f;
         ctx.JumpBufferedCounter = 0f;
-        Vector3 oldVelocity = ctx.PlayerVelocity;
-        ctx.PlayerVelocity = new Vector3(oldVelocity.x, Mathf.Sqrt(jumpHeight * -3.0f * ctx.BaseGravityValue), oldVelocity.z); //JUMP
+
+        ctx.CurrentGravityValue = ctx.JumpingGravityButtonHeld;
+
+
+        Jump();
+
         ctx.NextJumpTime = Time.time + (1f / ctx.JumpRate); //Sets the next time we should be able to jump
-        ctx.JumpHoldTimeCounter = ctx.MaxJumpHoldTime;
 
         //Disable the intial jump press
         ctx.InputJumpButtonPressed = false;
+
+        //JumpButtonHad has not been released yet
+        ctx.JumpButtonReleased = false;
 
 
         //Debug.Log("Jumped");
@@ -51,43 +56,46 @@ public class PlayerJumpingState : PlayerBaseState {
             ctx.UnchangedMove = Vector3.zero;
         }
         ctx.Move = ctx.UnchangedMove;
-        UpdateGravity();
 
         MovePlayer();
 
-        if (!ctx.InputJumpButtonHeld) {
-            //Button is released, change boolean to false
-            ctx.JumpHoldTimeCounter = 0f;
-        }
-
+        ctx.JumpButtonHoldTimer += Time.deltaTime;
         ctx.JumpBufferedCounter -= Time.deltaTime;
 
-        //If holdJump is enabled, then continuously push player up while they hold jump
         if (ctx.HoldJump) {
-            if (ctx.InputJumpButtonHeld) {
-                if (ctx.JumpHoldTimeCounter > 0) {
-                    Vector3 oldVelocity = ctx.PlayerVelocity;
-                    //reset velocity so that this jump will have the same velocity as the original jump
-                    ctx.PlayerVelocity = new Vector3(oldVelocity.x, Mathf.Sqrt(jumpHeight * -3.0f * ctx.BaseGravityValue), oldVelocity.z);
-                    ctx.JumpHoldTimeCounter -= Time.deltaTime;
+            if (!ctx.JumpButtonReleased) {
+                if (ctx.InputJumpButtonHeld) {
+                    //Use jumpingGravityButtonHeld
                 }
                 else {
-                    //ran out of holdTime, change boolean to false
-                    ctx.InputJumpButtonHeld = false;
+                    ctx.JumpButtonReleased = true;
+                    if (ctx.JumpButtonHoldTimer < ctx.MinJumpHoldTime) {
+                        //Use jumpingGravityButtonHeld
+                    }
+                    else {
+                        ctx.CurrentGravityValue = ctx.JumpingGravityButtonReleased;
+                    }
+                }
+            }
+            else {
+                if (ctx.JumpButtonHoldTimer < ctx.MinJumpHoldTime) {
+                    //Use jumpingGravityButtonHeld
+                }
+                else {
+                    ctx.CurrentGravityValue = ctx.JumpingGravityButtonReleased;
                 }
             }
         }
 
+        UpdateGravity();
         CheckSwitchStates();
     }
 
     public override void ExitState() {
-        ctx.CurrentGravityValue = ctx.BaseGravityValue;
         ctx.Controller.enableOverlapRecovery = true;
     }
 
     public override void CheckSwitchStates() {
-        // myabe we can just start a new instance of the jump state?
         if (ctx.InputJumpButtonPressed) {
             if (Time.time > ctx.NextJumpTime) {
                 if (ctx.ExtraJumpsLeft > 0) {
@@ -120,16 +128,16 @@ public class PlayerJumpingState : PlayerBaseState {
 
     private void UpdateGravity() {
         if (ctx.PlayerVelocity.y > -1f * ctx.TerminalVelocity) {
-            //Going to try to use Velocity Verlet here
-            float previousYVelocity = ctx.PlayerVelocity.y;
             float newYVelocity = ctx.PlayerVelocity.y + ctx.CurrentGravityValue * Time.deltaTime;
-            float nextYVelocity = (previousYVelocity + newYVelocity) * .5f;
-            ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, nextYVelocity, ctx.PlayerVelocity.z);
+            ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, newYVelocity, ctx.PlayerVelocity.z);
         }
-        ctx.Controller.Move(ctx.PlayerVelocity * Time.deltaTime); ;
+        ctx.Controller.Move(ctx.PlayerVelocity * Time.deltaTime);
     }
 
-    private void SetupJumpVariables() {
-        
+    protected void Jump() {
+        Vector3 oldVelocity = ctx.PlayerVelocity;
+        ctx.PlayerVelocity = new Vector3(oldVelocity.x, jumpVelocity, oldVelocity.z);
+
+        ctx.JumpButtonHoldTimer = 0f;
     }
 }

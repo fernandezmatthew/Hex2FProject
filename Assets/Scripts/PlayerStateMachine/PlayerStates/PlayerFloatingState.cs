@@ -48,15 +48,11 @@ public class PlayerFloatingState : PlayerBaseState {
     }
 
     public override void CheckSwitchStates() {
-        if (ctx.InputJumpButtonPressed) { //jump if pressed
-            // Need to cast up and see if we are close enough to the surface to jump from the water
-            /*if (Time.time > ctx.NextJumpTime) {
-                SwitchState(factory.Jumping());
-            }*/
-        }
-        else if (ctx.JumpBufferedCounter > 0f) { //jumpo if buffered
-            // Need to cast up and see if we are close enough to the surface to jump from the water
-            //SwitchState(factory.Jumping());
+        if (ctx.InputJumpButtonPressed || ctx.JumpBufferedCounter > 0f) { //jump if pressed
+            if (Time.time > ctx.NextJumpTime) {
+                SwitchState(factory.Jumping(ctx.SwimJumpScalar));
+            }
+            ctx.InputJumpButtonPressed = false;
         }
         else if (ctx.Move == Vector3.zero) { //switch to floating idle
             SwitchState(factory.FloatingIdle());
@@ -68,13 +64,7 @@ public class PlayerFloatingState : PlayerBaseState {
 
     //Non-State Machine related Functions
     private void MovePlayer() {
-        if (ctx.InputJumpButtonPressed || ctx.JumpBufferedCounter > 0f) { //jump if pressed
-            if (Time.time > ctx.NextJumpTime) {
-                SwitchState(factory.Jumping(ctx.SwimJumpHeight));
-            }
-            ctx.InputJumpButtonPressed = false;
-        }
-        else if (ctx.Move.x > 0) {
+        if (ctx.Move.x > 0) {
             ctx.Controller.Move(Vector3.right * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed);
         }
         else if (ctx.Move.x < 0) {

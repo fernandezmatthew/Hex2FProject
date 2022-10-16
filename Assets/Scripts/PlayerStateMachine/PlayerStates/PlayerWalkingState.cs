@@ -21,6 +21,8 @@ public class PlayerWalkingState : PlayerBaseState {
         ctx.Controller.enableOverlapRecovery = true;
         ctx.ExtraJumpsLeft = ctx.ExtraJumps; //Reset our extra jumps count
         ctx.Controller.stepOffset = ctx.OriginalStepOffset;
+
+        ctx.CurrentGravityValue = ctx.GroundedGravity;
     }
 
     public override void UpdateState() {
@@ -92,7 +94,8 @@ public class PlayerWalkingState : PlayerBaseState {
     }
 
     private void UpdateGravity() {
-        ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, -9f, ctx.PlayerVelocity.z);
+        float newYVelocity = ctx.PlayerVelocity.y + ctx.CurrentGravityValue * Time.deltaTime;
+        ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, newYVelocity, ctx.PlayerVelocity.z);
         ctx.Controller.Move(ctx.PlayerVelocity * Time.deltaTime);
     }
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public abstract class PlayerStateMachineBase : MonoBehaviour {
     //Setup Default State within the Lowest Level of the Context
+    
+    //IMPORTANT: Need a input reader class to assign variables starting with "input" based on input
 
     //References
     [SerializeField] protected LayerMask groundedLayers;
@@ -12,168 +14,172 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
     protected CharacterController controller;
     protected Animator anim;
 
-    //Visible Variables (Movement)
+    //VISIBLE
+    /********************************************************************/
+
     [SerializeField] protected int playerIndex = 0;
     [SerializeField] protected bool isSwimmer = false;
     [SerializeField] protected float basePlayerSpeed = 12f;
     [SerializeField] protected float playerSwimSpeed = 12f;
-    [SerializeField] protected float gravityScale = 8f; //Strength of gravity on this object
+    [SerializeField] protected float fallingGravityMultiplier = 2f; //Strength of gravity on this object
     [SerializeField] protected bool holdJump = false;
-    [SerializeField] protected float jumpHeight = 8f;
-    [SerializeField] protected float swimJumpHeight = 8f;
+    [SerializeField] protected float maxJumpHeight = 8f;
+    [SerializeField] protected float minJumpHeight = 4f; //Only used if holdJump is true. If holdJump is true but you always reach maxHeight, try reducing the minJumpHoldTime
+    [SerializeField] protected float maxJumpDuration = 1f;
+    [SerializeField] protected float minJumpHoldTime = .1f;
+    [SerializeField] protected float swimJumpScalar = 1f; //Does not accurately multiply the height of the original jump
     [SerializeField] protected float airSpeedRatio = .75f; //Decreases player speed in the air
     [SerializeField] protected float crouchSpeedRatio = .75f; //Decreases player speed while crouched
     [SerializeField] protected int extraJumps = 0;
-    [SerializeField] protected float maxJumpHoldTime = 0.2f;
     [SerializeField] protected float jumpBufferedCounterMax = .05f;
     [SerializeField] protected float terminalVelocity = 10000f; //Caps our fall speed. //Eventually make this not visible from editor
-    //Visible Variables (Hero)
-    /*[SerializeField] protected int maxHealth = 100;
-    [SerializeField] protected int baseDamageOutput = 20;
-    [SerializeField] protected float attackRange = 1f;
-    [SerializeField] protected float attackRate = 3f; //Stops player from being able to attack infintely fast, in Hz
-    [SerializeField] protected float abilityARate = 3f;
-    [SerializeField] protected float abilityDRate = 3f;*/
 
-    // Input Variables
+    //PRIVATES
+    /********************************************************************/
+
+    //Input
     protected Vector2 inputVector;
     protected bool inputJumpButtonPressed;
     protected bool inputJumpButtonHeld;
 
-    //Private Variables (Movement)
-    //A lot of these booleans can potentially be done away with because of the state machine, will comment them out without deleting for now
+    //Movement
     protected Vector3 playerVelocity; //vector used for vertical physics
     protected Vector3 unchangedMove;
     protected Vector3 move;
-    protected bool movementInputEnabled;
-    protected bool abilityInputEnabled;
-    //protected bool isGrounded;
-    //protected bool isMoving;
-    protected bool facingRight;
-    //protected bool sprintPressed; //Make sure to implement once inputs are setup
-    protected float baseGravityValue; //Personal gravitational acceleration
-    protected float currentGravityValue;
     protected float currentPlayerSpeed;
     protected float turnSmoothTime; //Smooths the object's turning
     protected float turnSmoothVelocity; //Also smooths the object's turning
+    protected float runThreshold;
+
+    //Enables
+    protected bool movementInputEnabled;
+
+    //Booleans
+    protected bool facingRight;
+
+    //Gravities
+    protected float groundedGravity; // Gravity while grounded
+    protected float jumpingGravityButtonHeld; // Gravity while jumping and holding the jump button
+    protected float jumpingGravityButtonReleased; // Gravity while jumping with jump button released
+    protected float fallingGravity;
+    protected float currentGravityValue; // the current gravity (Will be one of the predefined values)
+
+    //Jumping
+    protected float initialJumpVelocity;
     protected float originalStepOffset; //Helps us not jitter when jumping onto a ledge;
     protected float jumpRate; //Stops player from being able to accidentally double jump when spamming jump key. Measured in Hz.
     protected float nextJumpTime; //Works with previous variable
     protected int extraJumpsLeft; //Keeps track of how many more jumps we can use before touching the ground again
-    protected float jumpHoldTimeCounter;
+    protected float jumpButtonHoldTimer;
     protected float jumpBufferedCounter;
     protected float isGroundedCounter;
     protected float isGroundedCounterMax;
-    protected float runThreshold;
-    //protected float frozenZ; //Freezes Z position
-    //private Variables (Hero)
-    /*protected int currentHealth;
-    protected int currentDamageOutput;
-    protected float nextAttackTime; //Works with attackRate
-    protected float nextAbilityATime;
-    protected float nextAbilityDTime;
-    protected float attackAnimationTime; //time it takes to do attack animation
-    protected float attackAnimationTimeLeft; //time left in current attack animation
-    protected float caughtAnimationTime; //dont change the speed of this animation or wont work right unfortunately
-    protected bool attackedLastFrame;
-    protected Dictionary<string, Collider> enemiesHitOnCurrentAttack; //stores all enemies hit on currentattack so we dont register twice
-    protected bool inAbilityA;
-    protected bool inAbilityD;*/
+    protected bool jumpButtonReleased;
 
     //State Variables
     protected PlayerBaseState currentPlayerState;
     protected PlayerStateFactory playerStates;
     protected EPlayerState ePlayerState;
 
-    //Getters and Setters to our private variables  
+    //GETTERS AND SETTERS
+    /********************************************************************/
+
+    //References
+    public CharacterController Controller { get { return controller; } set { controller = value; } }
+
+    //State Machine
     public PlayerBaseState CurrentPlayerState { get { return currentPlayerState; } set { currentPlayerState = value; } }
     public EPlayerState EPlayerState { get { return ePlayerState; } set { ePlayerState = value; } }
-    public float JumpBufferedCounter { get { return jumpBufferedCounter; } set { jumpBufferedCounter = value; } }
-    public float JumpBufferedCounterMax { get { return jumpBufferedCounterMax; } set { jumpBufferedCounterMax = value; } }
-    public Vector3 Move { get { return move; } set { move = value; } }
-    public Vector3 UnchangedMove { get { return unchangedMove; } set { unchangedMove = value; } }
-    public CharacterController Controller { get { return controller; } set { controller = value; } }
-    public float BasePlayerSpeed { get { return basePlayerSpeed; } set { basePlayerSpeed = value; } }
-    public float CurrentPlayerSpeed { get { return currentPlayerSpeed; } set { currentPlayerSpeed = value; } }
-    public float PlayerSwimSpeed { get { return playerSwimSpeed; } set { playerSwimSpeed = value; } }
-    public float AirSpeedRatio { get { return airSpeedRatio; } set { airSpeedRatio = value; } }
-    public Vector3 PlayerVelocity { get { return playerVelocity; } set { playerVelocity = value; } }
-    public int ExtraJumpsLeft { get { return extraJumpsLeft; } set { extraJumpsLeft = value; } }
-    public int ExtraJumps { get { return extraJumps; } set { extraJumps = value; } }
-    public float OriginalStepOffset { get { return originalStepOffset; } set { originalStepOffset = value; } }
-    public bool MovementInputEnabled { get { return movementInputEnabled; } set { movementInputEnabled = value; } }
-    public bool AbilityInputEnabled { get { return abilityInputEnabled; } set { abilityInputEnabled = value; } }
-    public float NextJumpTime { get { return nextJumpTime; } set { nextJumpTime = value; } }
-    public float JumpHeight { get { return jumpHeight; } set { jumpHeight = value; } }
-    public float SwimJumpHeight { get { return swimJumpHeight; } set { swimJumpHeight = value; } }
-    public float BaseGravityValue { get { return baseGravityValue; } set { baseGravityValue = value; } }
-    public float CurrentGravityValue { get { return currentGravityValue; } set { currentGravityValue = value; } }
-    public float JumpRate { get { return jumpRate; } set { jumpRate = value; } }
-    public float JumpHoldTimeCounter { get { return jumpHoldTimeCounter; } set { jumpHoldTimeCounter = value; } }
-    public float MaxJumpHoldTime { get { return maxJumpHoldTime; } set { maxJumpHoldTime = value; } }
-    public bool HoldJump { get { return holdJump; } set { holdJump = value; } }
-    public float RunThreshold { get { return runThreshold; } set { runThreshold = value; } }
-    public float TerminalVelocity { get { return terminalVelocity; } set { terminalVelocity = value; } }
-    public bool IsSwimmer {get { return isSwimmer; } set { isSwimmer = value; } }
 
-    // Getters and Setters to Input Variables
+    //Input
     public Vector2 InputVector { get { return inputVector; } set { inputVector = value; } }
     public bool InputJumpButtonPressed { get { return inputJumpButtonPressed; } set { inputJumpButtonPressed = value; } }
     public bool InputJumpButtonHeld { get { return inputJumpButtonHeld; } set { inputJumpButtonHeld = value; } }
+    public int PlayerIndex { get { return playerIndex; } set { playerIndex = value; } }
+
+    //Movement
+    public Vector3 PlayerVelocity { get { return playerVelocity; } set { playerVelocity = value; } }
+    public Vector3 Move { get { return move; } set { move = value; } }
+    public Vector3 UnchangedMove { get { return unchangedMove; } set { unchangedMove = value; } }
+    public float BasePlayerSpeed { get { return basePlayerSpeed; } set { basePlayerSpeed = value; } }
+    public float CurrentPlayerSpeed { get { return currentPlayerSpeed; } set { currentPlayerSpeed = value; } }
+    public float PlayerSwimSpeed { get { return playerSwimSpeed; } set { playerSwimSpeed = value; } }
+    public float JumpBufferedCounter { get { return jumpBufferedCounter; } set { jumpBufferedCounter = value; } }
+    public float JumpBufferedCounterMax { get { return jumpBufferedCounterMax; } set { jumpBufferedCounterMax = value; } }
+    public float AirSpeedRatio { get { return airSpeedRatio; } set { airSpeedRatio = value; } }
+    public float RunThreshold { get { return runThreshold; } set { runThreshold = value; } }
+
+    //Enables
+    public bool MovementInputEnabled { get { return movementInputEnabled; } set { movementInputEnabled = value; } }
+
+    //Booleans
+    public bool IsSwimmer { get { return isSwimmer; } set { isSwimmer = value; } }
+
+    //Gravities
+    public float GroundedGravity { get { return groundedGravity; } set { groundedGravity = value; } }
+    public float JumpingGravityButtonHeld { get { return jumpingGravityButtonHeld; } set { jumpingGravityButtonHeld = value;} }
+    public float JumpingGravityButtonReleased { get { return jumpingGravityButtonReleased; } set { jumpingGravityButtonReleased = value; } }
+    public float FallingGravity { get { return fallingGravity; } set { fallingGravity = value; } }
+    public float CurrentGravityValue { get { return currentGravityValue; } set { currentGravityValue = value; } }
+    public float TerminalVelocity { get { return terminalVelocity; } set { terminalVelocity = value; } }
+
+    //Jumping
+    public float InitialJumpVelocity { get { return initialJumpVelocity; } set { initialJumpVelocity = value; } }
+    public int ExtraJumpsLeft { get { return extraJumpsLeft; } set { extraJumpsLeft = value; } }
+    public int ExtraJumps { get { return extraJumps; } set { extraJumps = value; } }
+    public float OriginalStepOffset { get { return originalStepOffset; } set { originalStepOffset = value; } }
+    public float NextJumpTime { get { return nextJumpTime; } set { nextJumpTime = value; } }
+    public float MaxJumpHeight { get { return maxJumpHeight; } set { maxJumpHeight = value; } }
+    public float MinJumpHeight { get { return minJumpHeight; } set { minJumpHeight = value; } }
+    public float MaxJumpDuration { get { return maxJumpDuration; } set { maxJumpDuration = value; } }
+    public float MinJumpHoldTime { get { return minJumpHoldTime; } set { minJumpHoldTime = value; } }
+    public float SwimJumpScalar { get { return swimJumpScalar; } set { swimJumpScalar = value; } }
+    public float JumpRate { get { return jumpRate; } set { jumpRate = value; } }
+    public float JumpButtonHoldTimer { get { return jumpButtonHoldTimer; } set { jumpButtonHoldTimer = value; } }
+    public bool HoldJump { get { return holdJump; } set { holdJump = value; } }
+    public bool JumpButtonReleased { get { return jumpButtonReleased; } set { jumpButtonReleased = value; } }
 
     protected virtual void Awake() {
-        //Grab References
+        //INITIALIZE VARIABLES // EDIT: A lot of variables havent been initialized yet
+        /********************************************************************/
+
+        //References
         controller = gameObject.GetComponent<CharacterController>(); //would like to disable the capsule connected to this
         anim = GetComponent<Animator>();
 
-        // input variables
+        //State Machine
+        ePlayerState = EPlayerState.Default;
+
+        //Input
         inputVector = Vector2.zero;
         inputJumpButtonPressed = false;
 
-
-        //Set variables (Movement)
-        baseGravityValue = gravityScale * -9.81f; //Sets personal gravity based on gravity scale
-        currentGravityValue = baseGravityValue;
-        ePlayerState = EPlayerState.Default;
+        //Movement
         movementInputEnabled = true;
-        abilityInputEnabled = true;
-        //isMoving = false;
-        //isGrounded = false;
-        //crouchPressed = false;
-        //sprintPressed = false;
-        //isCrouched = false;
         playerVelocity = Vector3.zero;
         move = Vector3.zero;
         currentPlayerSpeed = basePlayerSpeed;
         turnSmoothTime = 0.1f;
+        runThreshold = .85f;
+
+        //Enables
+
+        //Booleans
+
+        //Gravities
+        groundedGravity = -9.8f;
+        currentGravityValue = groundedGravity;
+
+        //Jumping
         jumpRate = 8f;
         nextJumpTime = 0f;
         extraJumpsLeft = extraJumps;
         originalStepOffset = controller.stepOffset;
-        //isJumping = false;
-        jumpHoldTimeCounter = maxJumpHoldTime;
         jumpBufferedCounter = 0f;
         isGroundedCounter = 0f;
         isGroundedCounterMax = .05f;
-        runThreshold = .85f;
-        //isInAbilityA = false;
-        //isInAbilityD = false;
-
-        //Set variables (Hero)
-        /*currentHealth = maxHealth;
-        currentDamageOutput = baseDamageOutput;
-        nextAttackTime = 0f;
-        nextAbilityATime = 0f;
-        nextAbilityDTime = 0f;
-        attackedLastFrame = false;
-        enemiesHitOnCurrentAttack = new Dictionary<string, Collider>();
-        attackAnimationTimeLeft = 0f;
-        inAbilityA = false;
-        inAbilityD = false;*/
-
-        //will eventually have to copy-paste the animationClip[] thing i have, but 0 for now
-        /*attackAnimationTime = 0;
-        caughtAnimationTime = 0;*/
+        jumpButtonReleased = true;
+        InitializeJumpVariables();
     }
 
     public virtual bool IsGrounded() {
@@ -327,10 +333,6 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
         }
     }
 
-    public void SetParent() {
-
-    }
-
     public Vector3 SetMoveRelativeToCamera() {
         Matrix4x4 matrix;
         if (cam != null) {
@@ -357,7 +359,29 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
         }
     }
 
-    public int GetPlayerIndex() {
-        return playerIndex;
+    public void InitializeJumpVariables() {
+        // for maxheight
+        float timeToMaxApex = maxJumpDuration / 2;
+        jumpingGravityButtonHeld = (-2f * maxJumpHeight) / Mathf.Pow(timeToMaxApex, 2);
+        initialJumpVelocity = (2 * maxJumpHeight) / timeToMaxApex;
+
+        // fallingGravity
+        fallingGravity = jumpingGravityButtonHeld * fallingGravityMultiplier;
+
+        // for minHeight
+        // find how high we should be after minJumpHoldTime has elapsed
+        // if that height is higher than maxjumpHieght, set jumpingGravityButtonReleased to jumpingGravityButtonHeld
+        // otherwise, find out what deceleration is required to get us to peak at minJumpHeight
+        float positionAfterMinJumpTime = initialJumpVelocity * minJumpHoldTime + (.5f * jumpingGravityButtonHeld * Mathf.Pow(minJumpHoldTime, 2));
+        float velocityAfterMinJumpTime = initialJumpVelocity + (jumpingGravityButtonHeld * minJumpHoldTime);
+        jumpingGravityButtonReleased = -Mathf.Pow(velocityAfterMinJumpTime, 2) / (2f * (minJumpHeight - positionAfterMinJumpTime));
+        if (jumpingGravityButtonReleased > 0f) {
+            jumpingGravityButtonReleased = jumpingGravityButtonHeld;
+        }
+
+        // Debug.Log("Initial jump velocity: " + initialJumpVelocity);
+        // Debug.Log("Velocity after minimumButtonHeldTime: " + velocityAfterMinJumpTime);
+        // Debug.Log("Gravity when button held: " + jumpingGravityButtonHeld);
+        // Debug.Log("Gravity when button released: " + jumpingGravityButtonReleased);
     }
 }

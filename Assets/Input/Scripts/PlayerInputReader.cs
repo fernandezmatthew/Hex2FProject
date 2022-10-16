@@ -18,7 +18,7 @@ public class PlayerInputReader : MonoBehaviour
         // Find all movement scripts in scene
         PlayerStateMachineBase[] movements = FindObjectsOfType<PlayerStateMachineBase>();
         int index = playerInput.playerIndex;
-        movement = movements.FirstOrDefault(movements => movements.GetPlayerIndex() == index);
+        movement = movements.FirstOrDefault(movements => movements.PlayerIndex == index);
         Debug.Log("Player Index " + index + " instantiated!");
 
         // Set our callbacks // try this if I cant figure out jump with new input system

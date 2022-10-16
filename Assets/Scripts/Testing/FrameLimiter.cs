@@ -12,5 +12,8 @@ public class FrameLimiter : MonoBehaviour
         if (limit) {
             Application.targetFrameRate = FPS;
         }
+        else {
+            Application.targetFrameRate = -1;
+        }
     }
 }

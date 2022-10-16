@@ -14,7 +14,7 @@ public class PlayerStateMachineProto : PlayerStateMachineBase
         else {
             currentPlayerState = playerStates.SwimmingIdle();
         }
-        // These lines seems very out of place here
+        // Make it so the players do not collide with eachother or with the incorrect water surface layers
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("LandPlayer"), LayerMask.NameToLayer("WaterSurface"), true);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("WaterPlayer"), LayerMask.NameToLayer("WaterSurface2"), true);
         Physics.IgnoreLayerCollision(LayerMask.NameToLayer("WaterPlayer"), LayerMask.NameToLayer("LandPlayer"), true);

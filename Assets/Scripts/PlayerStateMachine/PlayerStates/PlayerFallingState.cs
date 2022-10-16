@@ -14,6 +14,8 @@ public class PlayerFallingState : PlayerBaseState
         //Debug.Log("Hello from the Falling State");
 
         ctx.Controller.stepOffset = 0;
+
+        ctx.CurrentGravityValue = ctx.FallingGravity;
     }
 
     public override void UpdateState() {
@@ -26,11 +28,11 @@ public class PlayerFallingState : PlayerBaseState
             ctx.UnchangedMove = Vector3.zero;
         }
         ctx.Move = ctx.UnchangedMove;
-        UpdateGravity();
 
         MovePlayer();
         ctx.JumpBufferedCounter -= Time.deltaTime;
 
+        UpdateGravity();
         CheckSwitchStates();
     }
 
@@ -83,11 +85,8 @@ public class PlayerFallingState : PlayerBaseState
 
     private void UpdateGravity() {
         if (ctx.PlayerVelocity.y > -1f * ctx.TerminalVelocity) {
-            //Going to try to use Velocity Verlet here
-            float previousYVelocity = ctx.PlayerVelocity.y;
             float newYVelocity = ctx.PlayerVelocity.y + ctx.CurrentGravityValue * Time.deltaTime;
-            float nextYVelocity = (previousYVelocity + newYVelocity) * .5f;
-            ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, nextYVelocity, ctx.PlayerVelocity.z);
+            ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, newYVelocity, ctx.PlayerVelocity.z);
         }
         ctx.Controller.Move(ctx.PlayerVelocity * Time.deltaTime); ;
     }

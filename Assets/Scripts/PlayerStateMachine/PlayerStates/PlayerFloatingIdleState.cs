@@ -49,7 +49,7 @@ public class PlayerFloatingIdleState : PlayerBaseState {
     public override void CheckSwitchStates() {
         if (ctx.InputJumpButtonPressed || ctx.JumpBufferedCounter > 0f) { //jump if pressed
             if (Time.time > ctx.NextJumpTime) {
-                SwitchState(factory.Jumping(ctx.SwimJumpHeight));
+                SwitchState(factory.Jumping(ctx.SwimJumpScalar));
             }
             ctx.InputJumpButtonPressed = false;
         }
