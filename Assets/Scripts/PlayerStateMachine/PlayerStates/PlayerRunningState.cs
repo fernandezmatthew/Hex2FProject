@@ -26,19 +26,18 @@ public class PlayerRunningState : PlayerBaseState {
     public override void UpdateState() {
         //Debug.Log("We Running");
 
-        if (ctx.PlayerVelocity.y < -9f) {
+        /*if (ctx.PlayerVelocity.y < -9f) {
             Vector3 oldVelocity = ctx.PlayerVelocity;
             ctx.PlayerVelocity = new Vector3(oldVelocity.x, oldVelocity.y + (9f * Time.deltaTime), oldVelocity.z);
-        }
+        }*/
         if (ctx.MovementInputEnabled) {
             ctx.UnchangedMove = ctx.GetMoveInput();
         }
         else {
             ctx.UnchangedMove = Vector3.zero;
         }
-        ctx.Move = ctx.SetMoveRelativeToCamera();
-        ctx.UpdateRotation();
-        ctx.UpdateGravity();
+        ctx.Move = ctx.UnchangedMove;
+        UpdateGravity();
         MovePlayer();
 
         CheckSwitchStates();
@@ -49,13 +48,11 @@ public class PlayerRunningState : PlayerBaseState {
     }
 
     public override void CheckSwitchStates() {
-        if (Input.GetButtonDown("Jump")) { //jump if pressed
+        if (ctx.InputJumpButtonPressed || ctx.JumpBufferedCounter > 0f) { //jump if pressed
             if (Time.time > ctx.NextJumpTime) {
                 SwitchState(factory.Jumping());
             }
-        }
-        else if (ctx.JumpBufferedCounter > 0f) { //jumpo if buffered
-            SwitchState(factory.Jumping());
+            ctx.InputJumpButtonPressed = false;
         }
         else if (!ctx.IsGrounded()) { //chgange to falling
             /*if (!notGroundedTimerStarted) {
@@ -70,9 +67,6 @@ public class PlayerRunningState : PlayerBaseState {
             }*/
             SwitchState(factory.Falling());
         }
-        else if (ctx.UnchangedMove.magnitude < ctx.RunThreshold) {
-            SwitchState(factory.Walking());
-        }
         else if (ctx.Move == Vector3.zero) { //switch to idle
             SwitchState(factory.Idle());
         }
@@ -83,6 +77,20 @@ public class PlayerRunningState : PlayerBaseState {
 
     //Non-State Machine related Functions
     private void MovePlayer() {
-        ctx.Controller.Move(ctx.transform.forward * Time.deltaTime * ctx.CurrentPlayerSpeed);
+        // make character turn here
+        if (ctx.Move.x < 0) {
+            ctx.Controller.Move(Vector3.left * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed);
+        }
+        else if (ctx.Move.x > 0) {
+            ctx.Controller.Move(Vector3.right * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed);
+        }
+        else {
+            ctx.Controller.Move(Vector3.zero);
+        }
+    }
+
+    private void UpdateGravity() {
+        ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, -9f, ctx.PlayerVelocity.z);
+        ctx.Controller.Move(ctx.PlayerVelocity * Time.deltaTime);
     }
 }

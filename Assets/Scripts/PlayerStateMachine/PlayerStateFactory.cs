@@ -26,10 +26,26 @@ public class PlayerStateFactory {
         //used a third parameter "isJumpButtonDown" in first version
         return new PlayerJumpingState(context, this);
     }
-    public PlayerBaseState Recoil() {
-        return new PlayerRecoilState(context, this);
+    public PlayerBaseState Jumping(float customJumpHeight) {
+        //used a third parameter "isJumpButtonDown" in first version
+        return new PlayerJumpingState(context, this, customJumpHeight);
     }
     public PlayerBaseState Walking() {
         return new PlayerWalkingState(context, this);
     }
+    public PlayerBaseState Swimming() {
+        return new PlayerSwimmingState(context, this);
+    }
+    public PlayerBaseState SwimmingIdle() {
+        return new PlayerSwimmingIdleState(context, this);
+    }
+    public PlayerBaseState Floating() {
+        return new PlayerFloatingState(context, this);
+    }
+    public PlayerBaseState FloatingIdle() {
+        return new PlayerFloatingIdleState(context, this);
+    }
+    // add floating and swimming states
+    // maybe swimming idle?
+    // or we can have a boolean that tells us if we're the land guy or the water guy and that can constrain movement within the same states
 }

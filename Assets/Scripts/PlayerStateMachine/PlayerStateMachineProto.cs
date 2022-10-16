@@ -8,7 +8,17 @@ public class PlayerStateMachineProto : PlayerStateMachineBase
         base.Awake();
         //Setup Default State
         playerStates = new PlayerStateFactory(this);
-        currentPlayerState = playerStates.Idle();
+        if (!isSwimmer) {
+            currentPlayerState = playerStates.Idle();
+        }
+        else {
+            currentPlayerState = playerStates.SwimmingIdle();
+        }
+        // These lines seems very out of place here
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("LandPlayer"), LayerMask.NameToLayer("WaterSurface"), true);
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("WaterPlayer"), LayerMask.NameToLayer("WaterSurface2"), true);
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("WaterPlayer"), LayerMask.NameToLayer("LandPlayer"), true);
+
         currentPlayerState.EnterState();
     }
 
@@ -16,8 +26,13 @@ public class PlayerStateMachineProto : PlayerStateMachineBase
         //Update the currentState
         currentPlayerState.UpdateState();
 
+        // see on surfcase rays
+        /*float heightThreshold = .2f + controller.skinWidth;
+        Debug.DrawRay(controller.bounds.center, Vector3.up * (controller.bounds.extents.y + heightThreshold), Color.green);
+        Debug.DrawRay(controller.bounds.center, Vector3.down * (controller.bounds.extents.y + heightThreshold), Color.green);*/
+
         //Set current animation
-        anim.SetInteger("playerState", (int)ePlayerState);
+        //anim.SetInteger("playerState", (int)ePlayerState);
 
         /*float rotateCamX = Input.GetAxisRaw("RotateCamX");
         float rotateCamY = Input.GetAxisRaw("RotateCamY");
@@ -25,7 +40,7 @@ public class PlayerStateMachineProto : PlayerStateMachineBase
 
 
         //Debug Commands
-        Debug.Log(ePlayerState);
+        //Debug.Log(ePlayerState);
         //Debug.Log(playerVelocity.y);
         //Debug.Log(IsGrounded());
     }

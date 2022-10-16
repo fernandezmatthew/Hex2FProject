@@ -5,5 +5,9 @@ public enum EPlayerState {
     Jumping, //3
     Falling, //4
     Recoil, //5
-    Walking //6
+    Walking, //6
+    SwimmingIdle, //7
+    Swimming, //8
+    Floating, //9
+    FloatingIdle
 }

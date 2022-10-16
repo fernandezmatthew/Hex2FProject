@@ -36,9 +36,8 @@ public class PlayerWalkingState : PlayerBaseState {
         else {
             ctx.UnchangedMove = Vector3.zero;
         }
-        ctx.Move = ctx.SetMoveRelativeToCamera();
-        ctx.UpdateRotation();
-        ctx.UpdateGravity();
+        ctx.Move = ctx.UnchangedMove;
+        UpdateGravity();
         MovePlayer();
 
         CheckSwitchStates();
@@ -49,13 +48,11 @@ public class PlayerWalkingState : PlayerBaseState {
     }
 
     public override void CheckSwitchStates() {
-        if (Input.GetButtonDown("Jump")) { //jump if jump is pressed
+        if (ctx.InputJumpButtonPressed || ctx.JumpBufferedCounter > 0f) { //jump if jump is pressed
             if (Time.time > ctx.NextJumpTime) {
                 SwitchState(factory.Jumping());
             }
-        }
-        else if (ctx.JumpBufferedCounter > 0f) { //jump if jump is buffered
-            SwitchState(factory.Jumping());
+            ctx.InputJumpButtonPressed = false;
         }
         else if (!ctx.IsGrounded()) { //chgange to falling
             /*if (!notGroundedTimerStarted) {
@@ -83,6 +80,19 @@ public class PlayerWalkingState : PlayerBaseState {
 
     //Non-State Machine related Functions
     private void MovePlayer() {
-        ctx.Controller.Move(ctx.transform.forward * .35f * Time.deltaTime * ctx.CurrentPlayerSpeed);
+        if (ctx.Move.x < 0) {
+            ctx.Controller.Move(Vector3.left * Time.deltaTime * ctx.CurrentPlayerSpeed);
+        }
+        else if (ctx.Move.x > 0) {
+            ctx.Controller.Move(Vector3.right * Time.deltaTime * ctx.CurrentPlayerSpeed);
+        }
+        else {
+            ctx.Controller.Move(Vector3.zero);
+        }
+    }
+
+    private void UpdateGravity() {
+        ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, -9f, ctx.PlayerVelocity.z);
+        ctx.Controller.Move(ctx.PlayerVelocity * Time.deltaTime);
     }
 }

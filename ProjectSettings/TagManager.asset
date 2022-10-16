@@ -12,10 +12,10 @@ TagManager:
   - Water
   - UI
   - Platform
-  - Player
-  - 
-  - 
-  - 
+  - LandPlayer
+  - WaterSurface
+  - WaterPlayer
+  - WaterSurface2
   - 
   - 
   - 
