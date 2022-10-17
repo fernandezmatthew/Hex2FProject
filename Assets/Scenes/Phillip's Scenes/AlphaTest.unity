@@ -1094,7 +1094,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5251265580604552166, guid: 87ed54226def74a4a8d79b222296cd76, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 87ed54226def74a4a8d79b222296cd76, type: 3}
@@ -1444,11 +1444,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1069725986818572392, guid: 978f3bd5fd06c354bbc7d783ab139685, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.24
+      value: -12.98
       objectReference: {fileID: 0}
     - target: {fileID: 1069725986818572392, guid: 978f3bd5fd06c354bbc7d783ab139685, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.7
+      value: -4.57
       objectReference: {fileID: 0}
     - target: {fileID: 1069725986818572392, guid: 978f3bd5fd06c354bbc7d783ab139685, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1491,32 +1491,24 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2219132591154928024, guid: 978f3bd5fd06c354bbc7d783ab139685, type: 3}
-      propertyPath: stopAction
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2219132591154928031, guid: 978f3bd5fd06c354bbc7d783ab139685, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-    - target: {fileID: 2219132591154928031, guid: 978f3bd5fd06c354bbc7d783ab139685, type: 3}
-      propertyPath: m_RenderMode
-      value: 0
+      propertyPath: moveWithTransform
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2219132591154928031, guid: 978f3bd5fd06c354bbc7d783ab139685, type: 3}
       propertyPath: m_SortingLayer
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2219132591154928031, guid: 978f3bd5fd06c354bbc7d783ab139685, type: 3}
+      propertyPath: m_MotionVectors
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2219132591154928031, guid: 978f3bd5fd06c354bbc7d783ab139685, type: 3}
       propertyPath: m_SortingLayerID
       value: 1609686285
       objectReference: {fileID: 0}
     - target: {fileID: 2219132591452850739, guid: 978f3bd5fd06c354bbc7d783ab139685, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2219132591452850739, guid: 978f3bd5fd06c354bbc7d783ab139685, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 2219132591452850739, guid: 978f3bd5fd06c354bbc7d783ab139685, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1578,7 +1570,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1760030789929790748
 Transform:
   m_ObjectHideFlags: 0
