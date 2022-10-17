@@ -55,7 +55,7 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
     protected bool movementInputEnabled;
 
     //Booleans
-    protected bool facingRight;
+    protected bool isFacingRight;
 
     //Gravities
     protected float groundedGravity; // Gravity while grounded
@@ -114,6 +114,7 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
 
     //Booleans
     public bool IsSwimmer { get { return isSwimmer; } set { isSwimmer = value; } }
+    public bool IsFacingRight { get { return isFacingRight; } set { isFacingRight = value; } }
 
     //Gravities
     public float GroundedGravity { get { return groundedGravity; } set { groundedGravity = value; } }
@@ -169,6 +170,7 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
         //Enables
 
         //Booleans
+        isFacingRight = true;
 
         //Gravities
         groundedGravity = -9.8f;
@@ -387,5 +389,14 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
         // Debug.Log("Velocity after minimumButtonHeldTime: " + velocityAfterMinJumpTime);
         // Debug.Log("Gravity when button held: " + jumpingGravityButtonHeld);
         // Debug.Log("Gravity when button released: " + jumpingGravityButtonReleased);
+    }
+
+    public void UpdateRotation2D() {
+        if (isFacingRight) {
+            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        }
+        else {
+            transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+        }
     }
 }

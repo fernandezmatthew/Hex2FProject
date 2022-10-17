@@ -30,6 +30,7 @@ public class PlayerFallingState : PlayerBaseState
         ctx.Move = ctx.UnchangedMove;
 
         MovePlayer();
+        ctx.UpdateRotation2D();
         ctx.JumpBufferedCounter -= Time.deltaTime;
 
         UpdateGravity();
@@ -74,9 +75,11 @@ public class PlayerFallingState : PlayerBaseState
     private void MovePlayer() {
         if (ctx.Move.x < 0) {
             ctx.Controller.Move(Vector3.left * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed * ctx.AirSpeedRatio);
+            ctx.IsFacingRight = false;
         }
         else if (ctx.Move.x > 0) {
             ctx.Controller.Move(Vector3.right * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed * ctx.AirSpeedRatio);
+            ctx.IsFacingRight = true;
         }
         else {
             ctx.Controller.Move(Vector3.zero);

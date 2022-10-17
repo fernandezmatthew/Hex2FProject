@@ -39,6 +39,7 @@ public class PlayerRunningState : PlayerBaseState {
         ctx.Move = ctx.UnchangedMove;
         UpdateGravity();
         MovePlayer();
+        ctx.UpdateRotation2D();
 
         CheckSwitchStates();
     }
@@ -80,9 +81,11 @@ public class PlayerRunningState : PlayerBaseState {
         // make character turn here
         if (ctx.Move.x < 0) {
             ctx.Controller.Move(Vector3.left * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed);
+            ctx.IsFacingRight = false;
         }
         else if (ctx.Move.x > 0) {
             ctx.Controller.Move(Vector3.right * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed);
+            ctx.IsFacingRight = true;
         }
         else {
             ctx.Controller.Move(Vector3.zero);

@@ -39,8 +39,9 @@ public class PlayerWalkingState : PlayerBaseState {
             ctx.UnchangedMove = Vector3.zero;
         }
         ctx.Move = ctx.UnchangedMove;
-        UpdateGravity();
         MovePlayer();
+        ctx.UpdateRotation2D();
+        UpdateGravity();
 
         CheckSwitchStates();
     }
@@ -84,9 +85,11 @@ public class PlayerWalkingState : PlayerBaseState {
     private void MovePlayer() {
         if (ctx.Move.x < 0) {
             ctx.Controller.Move(Vector3.left * Time.deltaTime * ctx.CurrentPlayerSpeed);
+            ctx.IsFacingRight = false;
         }
         else if (ctx.Move.x > 0) {
             ctx.Controller.Move(Vector3.right * Time.deltaTime * ctx.CurrentPlayerSpeed);
+            ctx.IsFacingRight = true;
         }
         else {
             ctx.Controller.Move(Vector3.zero);

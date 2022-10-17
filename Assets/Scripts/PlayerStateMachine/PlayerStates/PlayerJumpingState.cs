@@ -58,6 +58,7 @@ public class PlayerJumpingState : PlayerBaseState {
         ctx.Move = ctx.UnchangedMove;
 
         MovePlayer();
+        ctx.UpdateRotation2D();
 
         ctx.JumpButtonHoldTimer += Time.deltaTime;
         ctx.JumpBufferedCounter -= Time.deltaTime;
@@ -117,9 +118,11 @@ public class PlayerJumpingState : PlayerBaseState {
     private void MovePlayer() {
         if (ctx.Move.x < 0) {
             ctx.Controller.Move(Vector3.left * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed * ctx.AirSpeedRatio);
+            ctx.IsFacingRight = false;
         }
         else if (ctx.Move.x > 0) {
             ctx.Controller.Move(Vector3.right * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed * ctx.AirSpeedRatio);
+            ctx.IsFacingRight = true;
         }
         else {
             ctx.Controller.Move(Vector3.zero);

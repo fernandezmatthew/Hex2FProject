@@ -38,6 +38,7 @@ public class PlayerFloatingState : PlayerBaseState {
         }
         ctx.Move = ctx.UnchangedMove;
         MovePlayer();
+        ctx.UpdateRotation2D();
 
         CheckSwitchStates();
     }
@@ -66,9 +67,11 @@ public class PlayerFloatingState : PlayerBaseState {
     private void MovePlayer() {
         if (ctx.Move.x > 0) {
             ctx.Controller.Move(Vector3.right * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed);
+            ctx.IsFacingRight = true;
         }
         else if (ctx.Move.x < 0) {
             ctx.Controller.Move(Vector3.left * Mathf.Abs(ctx.Move.x) * Time.deltaTime * ctx.CurrentPlayerSpeed);
+            ctx.IsFacingRight = false;
         }
         else {
             ctx.Controller.Move(Vector3.zero);

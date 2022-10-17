@@ -37,6 +37,7 @@ public class PlayerSwimmingState : PlayerBaseState {
         }
         ctx.Move = ctx.UnchangedMove;
         MovePlayer();
+        ctx.UpdateRotation2D();
 
         CheckSwitchStates();
     }
@@ -67,6 +68,13 @@ public class PlayerSwimmingState : PlayerBaseState {
     private void MovePlayer() {
         if (ctx.Move.magnitude > 0) {
             ctx.Controller.Move(ctx.Move * Time.deltaTime * ctx.CurrentPlayerSpeed);
+        }
+
+        if (ctx.Move.x > 0) {
+            ctx.IsFacingRight = true;
+        }
+        else if (ctx.Move.x < 0) {
+            ctx.IsFacingRight = false;
         }
         else {
             ctx.Controller.Move(Vector3.zero);
