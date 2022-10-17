@@ -471,8 +471,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4282203618
-  m_fontColor: {r: 0.8867924, g: 0.23759341, b: 0.23759341, a: 1}
+    rgba: 4282217954
+  m_fontColor: {r: 0.8862745, g: 0.46026546, b: 0.23921566, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -597,7 +597,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TRASHBOIS
+  m_text: PROJECT J
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: e73a58f6e2794ae7b1b7e50b7fb811b0, type: 2}
@@ -955,8 +955,8 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.745283, g: 0.12936985, b: 0.12936985, a: 1}
+    m_NormalColor: {r: 0.9433962, g: 0.64305156, b: 0.15485933, a: 1}
+    m_HighlightedColor: {r: 0.103595555, g: 0.5660378, b: 0.42178014, a: 1}
     m_PressedColor: {r: 0.084905684, g: 0.05639019, b: 0.05639019, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
