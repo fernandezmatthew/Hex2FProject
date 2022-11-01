@@ -74,3 +74,9 @@ crashlytics-build.properties
 #google-services
 /[Aa]ssets/google-services.json
 /[Aa]ssets/google-services.json.meta
+
+#firebase package
+/[Aa]ssets/Firebase/
+/[Aa]ssets/Firebase/*
+/[Aa]ssets/Firebase
+
