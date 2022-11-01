@@ -42,6 +42,7 @@ public class PlayerIdleState : PlayerBaseState {
 
         UpdateGravity();
         CheckSwitchStates();
+        ctx.bumpingHead();
     }
 
     public override void ExitState() {
@@ -50,8 +51,10 @@ public class PlayerIdleState : PlayerBaseState {
 
     public override void CheckSwitchStates() {
         if (ctx.InputJumpButtonPressed || ctx.JumpBufferedCounter > 0f) { //jump if pressed
-            if (Time.time > ctx.NextJumpTime) {
-                SwitchState(factory.Jumping());
+            if (!ctx.bumpingHead()) {
+                if (Time.time > ctx.NextJumpTime) {
+                    SwitchState(factory.Jumping());
+                }
             }
             ctx.InputJumpButtonPressed = false;
         }

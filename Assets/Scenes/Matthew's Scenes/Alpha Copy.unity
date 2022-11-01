@@ -383,7 +383,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 14.92
+  orthographic size: 12
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -431,8 +431,9 @@ MonoBehaviour:
   - {fileID: 682201659}
   camOffset: {x: 0, y: 0, z: -20}
   minZoomDistance: 12
-  maxZoomDistance: 24
-  zoomLimiter: 50
+  minZoom: 12
+  zoomSlope: 0.5
+  zoomSpeed: 4
 --- !u!1 &902799712
 GameObject:
   m_ObjectHideFlags: 0
@@ -1145,6 +1146,18 @@ PrefabInstance:
     - target: {fileID: 5251265580604552166, guid: 87ed54226def74a4a8d79b222296cd76, type: 3}
       propertyPath: maxJumpDuration
       value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 5251265580604552167, guid: 87ed54226def74a4a8d79b222296cd76, type: 3}
+      propertyPath: m_Height
+      value: 2.53
+      objectReference: {fileID: 0}
+    - target: {fileID: 5251265580604552167, guid: 87ed54226def74a4a8d79b222296cd76, type: 3}
+      propertyPath: m_Center.y
+      value: 0.57
+      objectReference: {fileID: 0}
+    - target: {fileID: 5251265580604552167, guid: 87ed54226def74a4a8d79b222296cd76, type: 3}
+      propertyPath: m_StepOffset
+      value: 0.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 87ed54226def74a4a8d79b222296cd76, type: 3}

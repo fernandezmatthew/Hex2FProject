@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Pretty much the same code from https://www.youtube.com/watch?v=aLpixrPvlB8&ab_channel=Brackeys
+// Derived from https://www.youtube.com/watch?v=aLpixrPvlB8&ab_channel=Brackeys with some changes
 
 [RequireComponent(typeof(Camera))]
 public class MultiTargetCam : MonoBehaviour
@@ -10,9 +10,10 @@ public class MultiTargetCam : MonoBehaviour
     public List<Transform> targets;
     public Vector3 camOffset;
 
-    public float minZoomDistance;
-    public float maxZoomDistance;
-    public float zoomLimiter = 50f;
+    public float minZoomDistance = 12f;
+    public float minZoom = 15f;
+    public float zoomSlope = 1f;
+    public float zoomSpeed = 1f;
 
     private float smoothTime;
     private Vector3 camVelocity;
@@ -38,8 +39,28 @@ public class MultiTargetCam : MonoBehaviour
     }
 
     private void Zoom() {
-        float newZoom = Mathf.Lerp(minZoomDistance, maxZoomDistance, GetGreatestDistance() / zoomLimiter);
-        cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, newZoom, Time.deltaTime);
+        // if we choose a number lower than main for our camera, this will default it to the min defined in this script
+        if (cam.orthographicSize < minZoom) {
+            cam.orthographicSize = minZoom;
+        }
+
+        // by default or newZoom will be the old zoom
+        float newZoom = cam.orthographicSize;
+
+        // calculate the current distance between our targets
+        float distanceOffset = GetGreatestDistance() - minZoomDistance;
+
+        if (distanceOffset > 0) {
+            // if the distance is larger than the mindistacnce threshold, zoom out
+            newZoom = minZoom + (distanceOffset * zoomSlope);
+        }
+        else {
+            // if we are below the threshold, make our zoom our minZoom
+            newZoom = minZoom;
+        }
+
+        // interpolate to our new zoom value
+        cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, newZoom, zoomSpeed * Time.deltaTime);
     }
 
     private Vector3 GetCenterPoint() {

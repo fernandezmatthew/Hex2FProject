@@ -317,6 +317,128 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
         return anyHits;
     }
 
+    public virtual bool bumpingHead() {
+        float heightThreshold = .2f + controller.skinWidth;
+
+        //Cast 9 rays to check if we bumped
+        bool[] hits = new bool[9];
+        bool hit = false;
+
+        if (groundedLayers != LayerMask.GetMask("Nothing")) {
+            //Center
+            hits[0] = Physics.Raycast(controller.bounds.center, Vector3.up, controller.bounds.extents.y + heightThreshold, groundedLayers);
+            //Center of sides
+            hits[1] = Physics.Raycast(controller.bounds.center + new Vector3(controller.bounds.extents.x, 0, 0), Vector3.up, controller.bounds.extents.y + heightThreshold, groundedLayers);
+            hits[2] = Physics.Raycast(controller.bounds.center - new Vector3(controller.bounds.extents.x, 0, 0), Vector3.up, controller.bounds.extents.y + heightThreshold, groundedLayers);
+            hits[3] = Physics.Raycast(controller.bounds.center + new Vector3(0, 0, controller.bounds.extents.z), Vector3.up, controller.bounds.extents.y + heightThreshold, groundedLayers);
+            hits[4] = Physics.Raycast(controller.bounds.center - new Vector3(0, 0, controller.bounds.extents.z), Vector3.up, controller.bounds.extents.y + heightThreshold, groundedLayers);
+            //Corners
+            hits[5] = Physics.Raycast(controller.bounds.center + new Vector3(controller.bounds.extents.x, 0, controller.bounds.extents.z), Vector3.up, controller.bounds.extents.y + heightThreshold, groundedLayers);
+            hits[6] = Physics.Raycast(controller.bounds.center + new Vector3(controller.bounds.extents.x, 0, -1f * controller.bounds.extents.z), Vector3.up, controller.bounds.extents.y + heightThreshold, groundedLayers);
+            hits[7] = Physics.Raycast(controller.bounds.center + new Vector3(-1f * controller.bounds.extents.x, 0, controller.bounds.extents.z), Vector3.up, controller.bounds.extents.y + heightThreshold, groundedLayers);
+            hits[8] = Physics.Raycast(controller.bounds.center + new Vector3(-1f * controller.bounds.extents.x, 0, -1f * controller.bounds.extents.z), Vector3.up, controller.bounds.extents.y + heightThreshold, groundedLayers);
+        }
+
+        else {
+            //Center
+            hits[0] = Physics.Raycast(controller.bounds.center, Vector3.down, controller.bounds.extents.y + heightThreshold);
+            //Center of sides
+            hits[1] = Physics.Raycast(controller.bounds.center + new Vector3(controller.bounds.extents.x, 0, 0), Vector3.up, controller.bounds.extents.y + heightThreshold);
+            hits[2] = Physics.Raycast(controller.bounds.center - new Vector3(controller.bounds.extents.x, 0, 0), Vector3.up, controller.bounds.extents.y + heightThreshold);
+            hits[3] = Physics.Raycast(controller.bounds.center + new Vector3(0, 0, controller.bounds.extents.z), Vector3.up, controller.bounds.extents.y + heightThreshold);
+            hits[4] = Physics.Raycast(controller.bounds.center - new Vector3(0, 0, controller.bounds.extents.z), Vector3.up, controller.bounds.extents.y + heightThreshold);
+            //Corners
+            hits[5] = Physics.Raycast(controller.bounds.center + new Vector3(controller.bounds.extents.x, 0, controller.bounds.extents.z), Vector3.up, controller.bounds.extents.y + heightThreshold);
+            hits[6] = Physics.Raycast(controller.bounds.center + new Vector3(controller.bounds.extents.x, 0, -1f * controller.bounds.extents.z), Vector3.up, controller.bounds.extents.y + heightThreshold);
+            hits[7] = Physics.Raycast(controller.bounds.center + new Vector3(-1f * controller.bounds.extents.x, 0, controller.bounds.extents.z), Vector3.up, controller.bounds.extents.y + heightThreshold);
+            hits[8] = Physics.Raycast(controller.bounds.center + new Vector3(-1f * controller.bounds.extents.x, 0, -1f * controller.bounds.extents.z), Vector3.up, controller.bounds.extents.y + heightThreshold);
+        }
+
+        bool anyHits = false;
+        for (int i = 0; i < hits.Length; i++) {
+            if (hits[i]) {
+                anyHits = true;
+                break;
+            }
+        }
+
+        /*//Debugging //Uncomment to see the 9 rays that check if bumped
+        Color rayColor;
+        if (hits[0]) {
+            rayColor = Color.green;
+        }
+        else {
+            rayColor = Color.red;
+        }
+        Debug.DrawRay(controller.bounds.center, Vector3.up * (controller.bounds.extents.y + heightThreshold), rayColor);
+
+        if (hits[1]) {
+            rayColor = Color.green;
+        }
+        else {
+            rayColor = Color.red;
+        }
+        Debug.DrawRay(controller.bounds.center + new Vector3(controller.bounds.extents.x, 0, 0), Vector3.up * (controller.bounds.extents.y + heightThreshold), rayColor);
+
+        if (hits[2]) {
+            rayColor = Color.green;
+        }
+        else {
+            rayColor = Color.red;
+        }
+        Debug.DrawRay(controller.bounds.center - new Vector3(controller.bounds.extents.x, 0, 0), Vector3.up * (controller.bounds.extents.y + heightThreshold), rayColor);
+
+        if (hits[3]) {
+            rayColor = Color.green;
+        }
+        else {
+            rayColor = Color.red;
+        }
+        Debug.DrawRay(controller.bounds.center + new Vector3(0, 0, controller.bounds.extents.z), Vector3.up * (controller.bounds.extents.y + heightThreshold), rayColor);
+
+        if (hits[4]) {
+            rayColor = Color.green;
+        }
+        else {
+            rayColor = Color.red;
+        }
+        Debug.DrawRay(controller.bounds.center - new Vector3(0, 0, controller.bounds.extents.z), Vector3.up * (controller.bounds.extents.y + heightThreshold), rayColor);
+
+        if (hits[5]) {
+            rayColor = Color.green;
+        }
+        else {
+            rayColor = Color.red;
+        }
+        Debug.DrawRay(controller.bounds.center + new Vector3(controller.bounds.extents.x, 0, controller.bounds.extents.z), Vector3.up * (controller.bounds.extents.y + heightThreshold), rayColor);
+
+        if (hits[6]) {
+            rayColor = Color.green;
+        }
+        else {
+            rayColor = Color.red;
+        }
+        Debug.DrawRay(controller.bounds.center + new Vector3(controller.bounds.extents.x, 0, -1f * controller.bounds.extents.z), Vector3.up * (controller.bounds.extents.y + heightThreshold), rayColor);
+
+        if (hits[7]) {
+            rayColor = Color.green;
+        }
+        else {
+            rayColor = Color.red;
+        }
+        Debug.DrawRay(controller.bounds.center + new Vector3(-1f * controller.bounds.extents.x, 0, controller.bounds.extents.z), Vector3.up * (controller.bounds.extents.y + heightThreshold), rayColor);
+        if (hits[8]) {
+            rayColor = Color.green;
+        }
+        else {
+            rayColor = Color.red;
+        }
+        Debug.DrawRay(controller.bounds.center + new Vector3(-1f * controller.bounds.extents.x, 0, -1f * controller.bounds.extents.z), Vector3.up * (controller.bounds.extents.y + heightThreshold), rayColor);
+        //Endof Debugging*/
+
+        return anyHits;
+    }
+
     public virtual bool BelowSurface() {
         float heightThreshold = .2f + controller.skinWidth;
 

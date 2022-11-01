@@ -97,7 +97,10 @@ public class PlayerJumpingState : PlayerBaseState {
     }
 
     public override void CheckSwitchStates() {
-        if (ctx.InputJumpButtonPressed) {
+        if (ctx.bumpingHead()) {
+            SwitchState(factory.Falling());
+        }
+        else if (ctx.InputJumpButtonPressed) {
             if (Time.time > ctx.NextJumpTime) {
                 if (ctx.ExtraJumpsLeft > 0) {
                     ctx.ExtraJumpsLeft -= 1;
