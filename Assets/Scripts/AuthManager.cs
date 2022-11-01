@@ -4,6 +4,10 @@ using Firebase;
 using Firebase.Auth;
 using TMPro;
 
+// For scene changing
+using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+
 public class AuthManager : MonoBehaviour
 {
     //Firebase variables
@@ -26,6 +30,12 @@ public class AuthManager : MonoBehaviour
     public TMP_InputField passwordRegisterField;
     public TMP_InputField passwordRegisterVerifyField;
     public TMP_Text warningRegisterText;
+
+    // Change scene
+    public void LoadByIndex(int sceneIndex)
+    {
+        SceneManager.LoadScene(sceneIndex);
+    }
 
     void Awake()
     {
@@ -108,6 +118,7 @@ public class AuthManager : MonoBehaviour
             Debug.LogFormat("User signed in successfully: {0} ({1})", User.DisplayName, User.Email);
             warningLoginText.text = "";
             confirmLoginText.text = "Logged In";
+            LoadByIndex(5);
         }
     }
 
@@ -184,6 +195,7 @@ public class AuthManager : MonoBehaviour
                         //Username is now set
                         //Now return to login screen
                         //UIManager.instance.LoginScreen();
+                        LoadByIndex(5);
                         warningRegisterText.text = "";
                     }
                 }
