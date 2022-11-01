@@ -26,5 +26,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Phillip's Scenes/LoginFlow/DummyLevel.unity
     guid: d5655685737cb45da96a4fc300872474
+  - enabled: 1
+    path: Assets/Scenes/Phillip's Scenes/LoginFlow/Login.unity
+    guid: 7a5bf2a94325b423cb156663c2457157
+  - enabled: 1
+    path: Assets/Scenes/Phillip's Scenes/LoginFlow/Register.unity
+    guid: 896e7c417f8ac4a949c7d6b952bd2c20
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: ce03a9ed1876985479bdb263bd51ec4d, type: 2}
