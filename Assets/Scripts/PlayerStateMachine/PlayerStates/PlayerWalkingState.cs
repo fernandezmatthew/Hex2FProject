@@ -52,8 +52,10 @@ public class PlayerWalkingState : PlayerBaseState {
 
     public override void CheckSwitchStates() {
         if (ctx.InputJumpButtonPressed || ctx.JumpBufferedCounter > 0f) { //jump if jump is pressed
-            if (Time.time > ctx.NextJumpTime) {
-                SwitchState(factory.Jumping());
+            if (!ctx.bumpingHead()) {
+                if (Time.time > ctx.NextJumpTime) {
+                    SwitchState(factory.Jumping());
+                }
             }
             ctx.InputJumpButtonPressed = false;
         }

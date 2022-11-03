@@ -43,16 +43,18 @@ public class PlayerFallingState : PlayerBaseState
 
     public override void CheckSwitchStates() {
         if (ctx.InputJumpButtonPressed) {
-            if (Time.time > ctx.NextJumpTime) {
-                if (ctx.ExtraJumpsLeft > 0) {
-                    ctx.ExtraJumpsLeft -= 1;
-                    SwitchState(factory.Jumping());
+            if (!ctx.bumpingHead()) {
+                if (Time.time > ctx.NextJumpTime) {
+                    if (ctx.ExtraJumpsLeft > 0) {
+                        ctx.ExtraJumpsLeft -= 1;
+                        SwitchState(factory.Jumping());
+                    }
+                    else {
+                        ctx.JumpBufferedCounter = ctx.JumpBufferedCounterMax;
+                    }
                 }
-                else {
-                    ctx.JumpBufferedCounter = ctx.JumpBufferedCounterMax;
-                }
-                ctx.InputJumpButtonPressed = false;
             }
+            ctx.InputJumpButtonPressed = false;
         }
         else if (ctx.IsGrounded()) {
             Vector3 oldVelocity = ctx.PlayerVelocity;

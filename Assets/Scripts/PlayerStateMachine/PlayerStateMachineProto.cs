@@ -41,7 +41,7 @@ public class PlayerStateMachineProto : PlayerStateMachineBase
 
 
         //Debug Commands
-        Debug.Log(ePlayerState);
+        //Debug.Log(ePlayerState);
         //Debug.Log(playerVelocity.y);
         //Debug.Log(IsGrounded());
     }
