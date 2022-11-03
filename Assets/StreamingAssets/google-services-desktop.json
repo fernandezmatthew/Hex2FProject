@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "480819325759",
+    "project_id": "junk-ea7b5",
+    "storage_bucket": "junk-ea7b5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480819325759:android:3d5687d5bff64666bf818a",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.Hex2FProject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "480819325759-3c9d6iii7sd2uvi8s9ks1p81u86jgb1a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcJmaKB1tgYLN23EnUB0efLNneQbgcrgE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "480819325759-3c9d6iii7sd2uvi8s9ks1p81u86jgb1a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
