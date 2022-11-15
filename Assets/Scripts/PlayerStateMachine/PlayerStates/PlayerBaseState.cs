@@ -22,8 +22,14 @@ public abstract class PlayerBaseState {
 
     public abstract void ExitState(); //called when leaving the state
 
-    public abstract void CheckSwitchStates(); //here we will put all of our conditions for switching to other states
-                                              //the states we can switch to depend on the state we are currently in
+    public virtual void CheckSwitchStates() {
+        // we must define this function in every state, cuz transition conditions depend on current state.
+        // The purpose of calling base.SwitchStates is for when EVERY state
+        // must check a certain condition, such as when dying.
+        if (ctx.Died) {
+            SwitchState(factory.Dead());
+        }
+    }
 
     protected void SwitchState(PlayerBaseState newState) {
         ExitState();

@@ -21,12 +21,7 @@ public class PlayerFallingState : PlayerBaseState
     public override void UpdateState() {
         //Debug.Log("We Falling");
 
-        if (ctx.MovementInputEnabled) {
-            ctx.UnchangedMove = ctx.GetMoveInput();
-        }
-        else {
-            ctx.UnchangedMove = Vector3.zero;
-        }
+        ctx.UnchangedMove = ctx.GetMoveInput();
         ctx.Move = ctx.UnchangedMove;
 
         MovePlayer();
@@ -42,15 +37,23 @@ public class PlayerFallingState : PlayerBaseState
     }
 
     public override void CheckSwitchStates() {
+        base.CheckSwitchStates();
+        if (ctx.CurrentPlayerState != this) {
+            // If we switched states within base, exit this function now
+            return;
+        }
+
         if (ctx.InputJumpButtonPressed) {
-            if (!ctx.bumpingHead()) {
-                if (Time.time > ctx.NextJumpTime) {
-                    if (ctx.ExtraJumpsLeft > 0) {
-                        ctx.ExtraJumpsLeft -= 1;
-                        SwitchState(factory.Jumping());
-                    }
-                    else {
-                        ctx.JumpBufferedCounter = ctx.JumpBufferedCounterMax;
+            if (ctx.MovementInputEnabled) {
+                if (!ctx.bumpingHead()) {
+                    if (Time.time > ctx.NextJumpTime) {
+                        if (ctx.ExtraJumpsLeft > 0) {
+                            ctx.ExtraJumpsLeft -= 1;
+                            SwitchState(factory.Jumping());
+                        }
+                        else {
+                            ctx.JumpBufferedCounter = ctx.JumpBufferedCounterMax;
+                        }
                     }
                 }
             }

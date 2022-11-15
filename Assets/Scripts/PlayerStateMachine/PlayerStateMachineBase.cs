@@ -4,9 +4,11 @@ using UnityEngine;
 
 public abstract class PlayerStateMachineBase : MonoBehaviour {
     //Setup Default State within the Lowest Level of the Context
-    
+
     //IMPORTANT: Need a input reader class to assign variables starting with "input" based on input
 
+    public bool died = false;
+    public bool movementInputEnabled = true;
     //References
     [SerializeField] protected LayerMask groundedLayers;
     [SerializeField] protected LayerMask enemyLayers;
@@ -52,10 +54,11 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
     protected float runThreshold;
 
     //Enables
-    protected bool movementInputEnabled;
+    //EDIT: PUTBACK protected bool movementInputEnabled;
 
     //Booleans
     protected bool isFacingRight;
+    //EDIT: PUTBACK protected bool died;
 
     //Gravities
     protected float groundedGravity; // Gravity while grounded
@@ -115,6 +118,7 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
     //Booleans
     public bool IsSwimmer { get { return isSwimmer; } set { isSwimmer = value; } }
     public bool IsFacingRight { get { return isFacingRight; } set { isFacingRight = value; } }
+    public bool Died { get { return died; } set { died = value; } }
 
     //Gravities
     public float GroundedGravity { get { return groundedGravity; } set { groundedGravity = value; } }
@@ -171,6 +175,7 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
 
         //Booleans
         isFacingRight = true;
+        died = false;
 
         //Gravities
         groundedGravity = -9.8f;
@@ -474,7 +479,11 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
     }
 
     public Vector3 GetMoveInput() {
-        return new Vector3(inputVector.x, inputVector.y, 0);
+        if (movementInputEnabled) {
+            return new Vector3(inputVector.x, inputVector.y, 0);
+        }
+        else
+            return Vector3.zero;
     }
 
     public void UpdateRotation() {
@@ -520,5 +529,20 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
         else {
             transform.rotation = Quaternion.Euler(0f, 180f, 0f);
         }
+    }
+
+
+    // could just use getters and setters for these boolean changing functions but I feel like this is cleaner when we're accessing
+    // from a hazard or manager rather than from a state
+    public void Die() {
+        died = true;
+    }
+
+    public void DisbaleMovementInput() {
+        movementInputEnabled = false;
+    }
+
+    public void EnableMovementInput() {
+        movementInputEnabled = true;
     }
 }

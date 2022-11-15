@@ -432,7 +432,7 @@ MonoBehaviour:
   camOffset: {x: 0, y: 0, z: -20}
   minZoomDistance: 12
   minZoom: 12
-  zoomSlope: 0.5
+  zoomSlope: 0.3
   zoomSpeed: 4
 --- !u!1 &902799712
 GameObject:
@@ -1128,6 +1128,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5251265580604552166, guid: 87ed54226def74a4a8d79b222296cd76, type: 3}
+      propertyPath: extraJumps
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5251265580604552166, guid: 87ed54226def74a4a8d79b222296cd76, type: 3}
       propertyPath: airSpeedRatio
       value: 0.75
       objectReference: {fileID: 0}
@@ -1417,6 +1421,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebebe53a81fcf3941a5a40c7c951a4e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  died: 0
+  movementInputEnabled: 0
   groundedLayers:
     serializedVersion: 2
     m_Bits: 64
@@ -1544,6 +1550,10 @@ PrefabInstance:
     - target: {fileID: 1069725986818572392, guid: 978f3bd5fd06c354bbc7d783ab139685, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1069725986818572393, guid: 978f3bd5fd06c354bbc7d783ab139685, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1069725986818572393, guid: 978f3bd5fd06c354bbc7d783ab139685, type: 3}
       propertyPath: minJumpHeight

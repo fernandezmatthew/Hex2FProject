@@ -30,12 +30,7 @@ public class PlayerFloatingIdleState : PlayerBaseState {
 
     public override void UpdateState() {
         //Debug.Log("We FloatIdling");
-        if (ctx.MovementInputEnabled) {
-            ctx.UnchangedMove = ctx.GetMoveInput();
-        }
-        else {
-            ctx.UnchangedMove = Vector3.zero;
-        }
+        ctx.UnchangedMove = ctx.GetMoveInput();
         ctx.Move = ctx.UnchangedMove;
 
         CheckSwitchStates();
@@ -47,10 +42,18 @@ public class PlayerFloatingIdleState : PlayerBaseState {
     }
 
     public override void CheckSwitchStates() {
+        base.CheckSwitchStates();
+        if (ctx.CurrentPlayerState != this) {
+            // If we switched states within base, exit this function now
+            return;
+        }
+
         if (ctx.InputJumpButtonPressed || ctx.JumpBufferedCounter > 0f) { //jump if pressed
-            if (!ctx.bumpingHead()) {
-                if (Time.time > ctx.NextJumpTime) {
-                    SwitchState(factory.Jumping(ctx.SwimJumpScalar));
+            if (ctx.MovementInputEnabled) {
+                if (!ctx.bumpingHead()) {
+                    if (Time.time > ctx.NextJumpTime) {
+                        SwitchState(factory.Jumping(ctx.SwimJumpScalar));
+                    }
                 }
             }
             ctx.InputJumpButtonPressed = false;

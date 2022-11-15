@@ -9,5 +9,6 @@ public enum EPlayerState {
     SwimmingIdle, //7
     Swimming, //8
     Floating, //9
-    FloatingIdle //10
+    FloatingIdle, //10
+    Dead //11
 }

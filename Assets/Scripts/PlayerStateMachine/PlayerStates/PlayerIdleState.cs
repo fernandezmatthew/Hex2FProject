@@ -28,16 +28,7 @@ public class PlayerIdleState : PlayerBaseState {
     public override void UpdateState() {
         //Debug.Log("We Idling");
 
-        if (ctx.PlayerVelocity.y < -9f) {
-            Vector3 oldVelocity = ctx.PlayerVelocity;
-            ctx.PlayerVelocity = new Vector3(oldVelocity.x, oldVelocity.y + (9f * Time.deltaTime), oldVelocity.z);
-        }
-        if (ctx.MovementInputEnabled) {
-            ctx.UnchangedMove = ctx.GetMoveInput();
-        }
-        else {
-            ctx.UnchangedMove = Vector3.zero;
-        }
+        ctx.UnchangedMove = ctx.GetMoveInput();
         ctx.Move = ctx.UnchangedMove;
 
         UpdateGravity();
@@ -50,10 +41,18 @@ public class PlayerIdleState : PlayerBaseState {
     }
 
     public override void CheckSwitchStates() {
+        base.CheckSwitchStates();
+        if (ctx.CurrentPlayerState != this) {
+            // If we switched states within base, exit this function now
+            return;
+        }
+
         if (ctx.InputJumpButtonPressed || ctx.JumpBufferedCounter > 0f) { //jump if pressed
-            if (!ctx.bumpingHead()) {
-                if (Time.time > ctx.NextJumpTime) {
-                    SwitchState(factory.Jumping());
+            if (ctx.MovementInputEnabled) {
+                if (!ctx.bumpingHead()) {
+                    if (Time.time > ctx.NextJumpTime) {
+                        SwitchState(factory.Jumping());
+                    }
                 }
             }
             ctx.InputJumpButtonPressed = false;
@@ -70,8 +69,7 @@ public class PlayerIdleState : PlayerBaseState {
     }
 
     private void UpdateGravity() {
-        float newYVelocity = ctx.PlayerVelocity.y + ctx.CurrentGravityValue * Time.deltaTime;
-        ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, newYVelocity, ctx.PlayerVelocity.z);
+        ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, ctx.CurrentGravityValue, ctx.PlayerVelocity.z);
         ctx.Controller.Move(ctx.PlayerVelocity * Time.deltaTime);
     }
 }

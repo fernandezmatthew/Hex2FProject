@@ -32,12 +32,8 @@ public class PlayerSwimmingIdleState : PlayerBaseState {
 
     public override void UpdateState() {
         //Debug.Log("We SwimIdling");
-        if (ctx.MovementInputEnabled) {
-            ctx.UnchangedMove = ctx.GetMoveInput();
-        }
-        else {
-            ctx.UnchangedMove = Vector3.zero;
-        }
+
+        ctx.UnchangedMove = ctx.GetMoveInput();
         ctx.Move = ctx.UnchangedMove;
 
         CheckSwitchStates();
@@ -48,12 +44,20 @@ public class PlayerSwimmingIdleState : PlayerBaseState {
     }
 
     public override void CheckSwitchStates() {
+        base.CheckSwitchStates();
+        if (ctx.CurrentPlayerState != this) {
+            // If we switched states within base, exit this function now
+            return;
+        }
+
         if (ctx.InputJumpButtonPressed || ctx.JumpBufferedCounter > 0f) { //jump if pressed
             // Need to cast up and see if we are close enough to the surface to jump from the water
-            if (ctx.BelowSurface()) {
-                if (!ctx.bumpingHead()) {
-                    if (Time.time > ctx.NextJumpTime) {
-                        SwitchState(factory.Jumping(ctx.SwimJumpScalar));
+            if (ctx.MovementInputEnabled) {
+                if (ctx.BelowSurface()) {
+                    if (!ctx.bumpingHead()) {
+                        if (Time.time > ctx.NextJumpTime) {
+                            SwitchState(factory.Jumping(ctx.SwimJumpScalar));
+                        }
                     }
                 }
             }

@@ -45,7 +45,7 @@ public class PlayerStateFactory {
     public PlayerBaseState FloatingIdle() {
         return new PlayerFloatingIdleState(context, this);
     }
-    // add floating and swimming states
-    // maybe swimming idle?
-    // or we can have a boolean that tells us if we're the land guy or the water guy and that can constrain movement within the same states
+    public PlayerBaseState Dead() {
+        return new PlayerDeadState(context, this);
+    }
 }

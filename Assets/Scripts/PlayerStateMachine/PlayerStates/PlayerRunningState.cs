@@ -21,22 +21,16 @@ public class PlayerRunningState : PlayerBaseState {
         ctx.Controller.enableOverlapRecovery = true;
         ctx.ExtraJumpsLeft = ctx.ExtraJumps; //Reset our extra jumps count
         ctx.Controller.stepOffset = ctx.OriginalStepOffset;
+
+        ctx.CurrentGravityValue = ctx.GroundedGravity;
     }
 
     public override void UpdateState() {
         //Debug.Log("We Running");
 
-        /*if (ctx.PlayerVelocity.y < -9f) {
-            Vector3 oldVelocity = ctx.PlayerVelocity;
-            ctx.PlayerVelocity = new Vector3(oldVelocity.x, oldVelocity.y + (9f * Time.deltaTime), oldVelocity.z);
-        }*/
-        if (ctx.MovementInputEnabled) {
-            ctx.UnchangedMove = ctx.GetMoveInput();
-        }
-        else {
-            ctx.UnchangedMove = Vector3.zero;
-        }
+        ctx.UnchangedMove = ctx.GetMoveInput(); // dont need this line
         ctx.Move = ctx.UnchangedMove;
+
         UpdateGravity();
         MovePlayer();
         ctx.UpdateRotation2D();
@@ -49,10 +43,18 @@ public class PlayerRunningState : PlayerBaseState {
     }
 
     public override void CheckSwitchStates() {
+        base.CheckSwitchStates();
+        if (ctx.CurrentPlayerState != this) {
+            // If we switched states within base, exit this function now
+            return;
+        }
+
         if (ctx.InputJumpButtonPressed || ctx.JumpBufferedCounter > 0f) { //jump if pressed
-            if (!ctx.bumpingHead()) {
-                if (Time.time > ctx.NextJumpTime) {
-                    SwitchState(factory.Jumping());
+            if (ctx.MovementInputEnabled) {
+                if (!ctx.bumpingHead()) {
+                    if (Time.time > ctx.NextJumpTime) {
+                        SwitchState(factory.Jumping());
+                    }
                 }
             }
             ctx.InputJumpButtonPressed = false;
@@ -95,7 +97,7 @@ public class PlayerRunningState : PlayerBaseState {
     }
 
     private void UpdateGravity() {
-        ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, -9f, ctx.PlayerVelocity.z);
+        ctx.PlayerVelocity = new Vector3(ctx.PlayerVelocity.x, ctx.CurrentGravityValue, ctx.PlayerVelocity.z);
         ctx.Controller.Move(ctx.PlayerVelocity * Time.deltaTime);
     }
 }
