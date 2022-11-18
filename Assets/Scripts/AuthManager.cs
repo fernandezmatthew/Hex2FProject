@@ -155,41 +155,10 @@ public class AuthManager : MonoBehaviour
             this.reference.Child("users").Child(User.UserId).Child("junkCollected")
                 .GetValueAsync().ContinueWithOnMainThread(task => {
                     DataSnapshot snapshot = task.Result;
-                    //Debug.Log("AYO");
-                    //Debug.Log(snapshot);
-                    //Debug.Log((double) snapshot.GetValue(true));
-                    Debug.Log("HI");
                     double newVal = double.Parse(snapshot.GetValue(false).ToString()) + 1;
-                    Debug.Log("AYO");
-                    Debug.Log(newVal);
-
-                    //int prevJunkCollected = snapshot;
-                    //Debug.Log(prevJunkCollected);
                     this.reference.Child("users").Child(User.UserId).Child("junkCollected").SetValueAsync(newVal);
                 });
-            //this.reference.Child("users").Child(User.UserId).Child("junkCollected").SetValueAsync(prevJunkCollected);
-            //Debug.Log(this.reference.Child("users").Child(User.UserId).GetRawJsonValue().ToString());
-            /*
-            FirebaseDatabase.DefaultInstance
-                  .GetReference("users")
-                  .GetValueAsync().ContinueWithOnMainThread(task => {
-                      if (task.IsFaulted)
-                      {
-                          Debug.Log("FAULTED when trying to get snapshot");
-                          return;
-                      }
-                      else if (task.IsCompleted)
-                      {
-                          DataSnapshot snapshot = task.Result;
-                          Debug.Log("AYO");
-                          Debug.Log(snapshot.Child(User.UserId).GetRawJsonValue().ToString());
-                          //Debug.Log(snapshot.Child("users").Child(User.UserId).GetRawJsonValue().ToString());
-                      }
-                  });
-            */
 
-            //Debug.Log('\'' + User.DisplayName + '\'');
-            //Debug.Log(User.UserId);
             warningLoginText.text = "";
             confirmLoginText.text = "Logged In";
             LoadByIndex(5);
