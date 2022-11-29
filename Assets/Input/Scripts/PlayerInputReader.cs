@@ -10,6 +10,7 @@ public class PlayerInputReader : MonoBehaviour
     protected PlayerControls playerControls;
     protected PlayerInput playerInput;
     protected PlayerStateMachineBase movement;
+    protected LevelManager levelManager;
 
     void Awake() {
 
@@ -21,9 +22,13 @@ public class PlayerInputReader : MonoBehaviour
         movement = movements.FirstOrDefault(movements => movements.PlayerIndex == index);
         Debug.Log("Player Index " + index + " instantiated!");
 
+        // Find the input system
+        levelManager = FindObjectOfType<LevelManager>();
+
         // Set our callbacks // try this if I cant figure out jump with new input system
         playerInput.actions["Jump"].started += OnJump;
         playerInput.actions["Jump"].canceled += OnJumpReleased;
+        playerInput.actions["Pause"].started += OnPause;
     }
 
     public void OnMove(CallbackContext ctx) {
@@ -41,5 +46,9 @@ public class PlayerInputReader : MonoBehaviour
 
     public void OnJumpReleased(CallbackContext ctx) {
         movement.InputJumpButtonHeld = false;
+    }
+
+    public void OnPause(CallbackContext ctx) {
+        levelManager.PausePressed();
     }
 }

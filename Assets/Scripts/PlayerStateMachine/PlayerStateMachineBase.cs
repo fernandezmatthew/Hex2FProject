@@ -5,9 +5,7 @@ using UnityEngine;
 public abstract class PlayerStateMachineBase : MonoBehaviour {
     //Setup Default State within the Lowest Level of the Context
 
-    //IMPORTANT: Need a input reader class to assign variables starting with "input" based on input
-
-    public bool died = false;
+    public bool died = false; // make this protected once we have death conditions
     public bool movementInputEnabled = true;
     //References
     [SerializeField] protected LayerMask groundedLayers;
@@ -538,7 +536,7 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
         died = true;
     }
 
-    public void DisbaleMovementInput() {
+    public void DisableMovementInput() {
         movementInputEnabled = false;
     }
 
