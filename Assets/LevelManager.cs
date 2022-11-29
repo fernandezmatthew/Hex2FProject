@@ -10,13 +10,18 @@ public class LevelManager : MonoBehaviour
     [SerializeField] protected GameObject successMenuUi;
     [SerializeField] protected GameObject failureMenuUi;
     [SerializeField] protected GameObject junkCounterUi;
+    [SerializeField] protected GameObject timerUi;
 
     protected PlayerStateMachineBase[] players;
     protected bool isPaused;
     protected bool levelFailed;
+    protected bool timerEnabled;
+
     protected int totalJunk;
     protected int[] junkCollected;
     protected int totalJunkCollected;
+    protected float elapsedTime;
+    protected string elapsedTimeString;
 
     //public int TotalJunk { get { return totalJunk; } set { totalJunk = value; } }
     //public int[] JunkCollected { get { return junkCollected; } set { junkCollected = value; } }
@@ -25,6 +30,11 @@ public class LevelManager : MonoBehaviour
         // Define any variables
         isPaused = false;
         levelFailed = false;
+        timerEnabled = true;
+
+        // Define all timing variables to be 0
+        elapsedTime = 0f;
+        elapsedTimeString = null;
 
         // Find all movement scripts in sceneand store in array. Keep indexes the same as their assigned index
         players = FindObjectsOfType<PlayerStateMachineBase>();
@@ -43,6 +53,11 @@ public class LevelManager : MonoBehaviour
     }
 
     void Update() {
+
+        if (timerEnabled) {
+            UpdateTimer();
+        }
+
         if (!levelFailed) {
             for (int i = 0; i < players.Length; i++) {
                 if (players[i].EPlayerState == EPlayerState.Dead) {
@@ -68,6 +83,54 @@ public class LevelManager : MonoBehaviour
                 playersSorted = true;
             }
         }
+    }
+
+    protected void UpdateTimer() {
+        // update timer
+        elapsedTime += Time.deltaTime;
+        int currentMinutes = (int)elapsedTime / 60;
+        int currentSeconds = (int)elapsedTime % 60;
+        int currentMilliseconds = (int)(1000 * elapsedTime % 1000);
+
+        string currentMinutesString = currentMinutes.ToString();
+        string currentSecondsString = currentSeconds.ToString();
+        string currentMillisecondsString = currentMilliseconds.ToString();
+
+        if (currentMinutes > 99) {
+            // Don't wanna count hours, and don't want three digit minutes
+            elapsedTimeString = "Why are you still here?";
+            elapsedTime -= Time.deltaTime;
+            timerEnabled = false;
+        }
+        else {
+            // print the current time
+            if (currentMinutes < 10) {
+                currentMinutesString = '0' + currentMinutesString;
+            }
+
+            if (currentSeconds < 10) {
+                currentSecondsString = '0' + currentSecondsString;
+            }
+            if (currentMilliseconds < 100) {
+                if (currentMilliseconds < 10) {
+                    currentMillisecondsString = "00" + currentMillisecondsString;
+                }
+                currentMillisecondsString = '0' + currentMillisecondsString;
+            }
+
+            elapsedTimeString = currentMinutesString + ":" + currentSecondsString + "." + currentMillisecondsString;
+        }
+
+        if (timerUi != null) {
+            if (timerUi.GetComponent<TMP_Text>() != null) {
+                timerUi.GetComponent<TMP_Text>().text = elapsedTimeString;
+            }
+        }
+    }
+
+    protected int FindTotalJunk() {
+        Collectible[] collectiblesInScene = FindObjectsOfType<Collectible>();
+        return collectiblesInScene.Length;
     }
 
     public void PausePressed() {
@@ -105,11 +168,6 @@ public class LevelManager : MonoBehaviour
         isPaused = !isPaused;
     }
 
-    protected int FindTotalJunk() {
-        Collectible[] collectiblesInScene = FindObjectsOfType<Collectible>();
-        return collectiblesInScene.Length;
-    }
-
     public void CollectJunk(int playerIndex, int value) {
         // increment junk collected for the player who collected it
         junkCollected[playerIndex] += 1; // Can potentially change to value if we implement that
@@ -142,9 +200,7 @@ public class LevelManager : MonoBehaviour
             successMenuUi.SetActive(true);
         }
 
-        for (int i = 0; i < players.Length; i++) { 
-            players[i].DisableMovementInput();
-        }
+        EndLevel();
     }
 
     public void Failure() {
@@ -152,8 +208,18 @@ public class LevelManager : MonoBehaviour
             failureMenuUi.SetActive(true);
         }
 
+        EndLevel();
+    }
+
+    public void EndLevel() {
+        // Stop the timer
+        timerEnabled = false;
+
+        // Disable all movement input
         for (int i = 0; i < players.Length; i++) {
             players[i].DisableMovementInput();
         }
+
+        // Do firebase stuff with timeElapsed, junkCollected, inc deaths if levelfailed, etc.
     }
 }
