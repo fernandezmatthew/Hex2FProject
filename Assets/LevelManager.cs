@@ -32,6 +32,21 @@ public class LevelManager : MonoBehaviour
         levelFailed = false;
         timerEnabled = true;
 
+        // Get UserID from UserInfo object
+        //UserInfo userInfo = FindObjectOfType<UserInfo>();
+        Debug.Log("HERE");
+        Debug.Log(UserInfo.uid);
+        /*
+        if (userInfo != null)
+        {
+            Debug.Log(UserInfo.uid);
+        }
+        else
+        {
+            Debug.Log("NO USER CREATED. DID YOU LOGIN / REFGISTER?");
+        }
+        */
+
         // Define all timing variables to be 0
         elapsedTime = 0f;
         elapsedTimeString = null;

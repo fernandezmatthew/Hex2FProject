@@ -153,12 +153,15 @@ public class AuthManager : MonoBehaviour
             //Increment 'junkCollected' by 1
             User = LoginTask.Result;
             Debug.LogFormat("User signed in successfully: {0} ({1})", User.DisplayName, User.Email);
+            UserInfo.uid = User.UserId;
+            /*
             this.reference.Child("users").Child(User.UserId).Child("junkCollected")
                 .GetValueAsync().ContinueWithOnMainThread(task => {
                     DataSnapshot snapshot = task.Result;
                     double newVal = double.Parse(snapshot.GetValue(false).ToString()) + 1;
                     this.reference.Child("users").Child(User.UserId).Child("junkCollected").SetValueAsync(newVal);
                 });
+            */
 
             warningLoginText.text = "";
             confirmLoginText.text = "Logged In";
