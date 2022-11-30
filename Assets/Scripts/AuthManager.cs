@@ -2,11 +2,29 @@ using System.Collections;
 using UnityEngine;
 using Firebase;
 using Firebase.Auth;
+using Firebase.Database;
+using Firebase.Extensions;
 using TMPro;
 
 // For scene changing
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+
+public class User
+{
+    public string username;
+    public float highScore;
+    public double junkCollected;
+
+    public User() { }
+
+    public User(string username_, float highScore_, double junkCollected)
+    {
+        this.username = username_;
+        this.highScore = highScore_;
+        this.junkCollected = junkCollected;
+    }
+}
 
 public class AuthManager : MonoBehaviour
 {
@@ -15,6 +33,7 @@ public class AuthManager : MonoBehaviour
     public DependencyStatus dependencyStatus;
     public FirebaseAuth auth;
     public FirebaseUser User;
+    public DatabaseReference reference;
 
     //Login variables
     [Header("Login")]
@@ -47,6 +66,24 @@ public class AuthManager : MonoBehaviour
             {
                 //If they are avalible Initialize Firebase
                 InitializeFirebase();
+                this.reference = FirebaseDatabase.DefaultInstance.RootReference;
+
+                FirebaseDatabase.DefaultInstance
+                  .GetReference("users")
+                  .GetValueAsync().ContinueWithOnMainThread(task => {
+                      if (task.IsFaulted)
+                      {
+                          Debug.Log("FAULTED when trying to get snapshot");
+                      }
+                      else if (task.IsCompleted)
+                      {
+                          DataSnapshot snapshot = task.Result;
+                          Debug.Log("Connected to firebase");
+                          //Debug.Log(snapshot.GetRawJsonValue().ToString());
+                      }
+                  });
+
+
             }
             else
             {
@@ -113,12 +150,19 @@ public class AuthManager : MonoBehaviour
         else
         {
             //User is now logged in
-            //Now get the result
+            //Increment 'junkCollected' by 1
             User = LoginTask.Result;
             Debug.LogFormat("User signed in successfully: {0} ({1})", User.DisplayName, User.Email);
+            this.reference.Child("users").Child(User.UserId).Child("junkCollected")
+                .GetValueAsync().ContinueWithOnMainThread(task => {
+                    DataSnapshot snapshot = task.Result;
+                    double newVal = double.Parse(snapshot.GetValue(false).ToString()) + 1;
+                    this.reference.Child("users").Child(User.UserId).Child("junkCollected").SetValueAsync(newVal);
+                });
+
             warningLoginText.text = "";
             confirmLoginText.text = "Logged In";
-            LoadByIndex(5);
+            LoadByIndex(6);
         }
     }
 
@@ -192,10 +236,18 @@ public class AuthManager : MonoBehaviour
                     }
                     else
                     {
-                        //Username is now set
-                        //Now return to login screen
-                        //UIManager.instance.LoginScreen();
-                        LoadByIndex(5);
+                        //Create new user in DB
+                        User user = new User(_username, 0, 0);
+                        string json = JsonUtility.ToJson(user);
+                        //Call the Firebase auth signin function passing the email and password
+                        var LoginTask = auth.SignInWithEmailAndPasswordAsync(_email, _password);
+                        //Wait until the task completes
+                        yield return new WaitUntil(predicate: () => LoginTask.IsCompleted);
+                        User = LoginTask.Result;
+                        this.reference.Child("users").Child(User.UserId).SetRawJsonValueAsync(json);
+
+
+                        LoadByIndex(6);
                         warningRegisterText.text = "";
                     }
                 }

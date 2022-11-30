@@ -18,22 +18,19 @@ EditorBuildSettings:
     path: Assets/Scenes/tutorial 2.unity
     guid: 1edccc23841cad54eab79ad5a83119e0
   - enabled: 1
-    path: Assets/Scenes/Phillip's Scenes/LoginFlow/select level.unity
-    guid: 5c52bd9b8770e41bfbf97ff5b8298654
+    path: Assets/Scenes/Matthew's Scenes/Beta Copy.unity
+    guid: e8bf95fda400ede4e87035df517c6a2c
   - enabled: 1
-    path: Assets/Scenes/Phillip's Scenes/LoginFlow/main menu.unity
-    guid: 2f28de9a1bf674359b257f6dbcfc4ffd
+    path: Assets/Scenes/LoginFlow/Login.unity
+    guid: c46ee9c12a2524847b652fbfac547237
   - enabled: 1
-    path: Assets/Scenes/Phillip's Scenes/LoginFlow/DummyLevel.unity
-    guid: d5655685737cb45da96a4fc300872474
+    path: Assets/Scenes/LoginFlow/main menu.unity
+    guid: a697243cef0b47947b41beebe1857091
   - enabled: 1
-    path: Assets/Scenes/Phillip's Scenes/LoginFlow/Login.unity
-    guid: 7a5bf2a94325b423cb156663c2457157
+    path: Assets/Scenes/LoginFlow/Register.unity
+    guid: 12ffafbd23e3327478cacb5e55dcb02d
   - enabled: 1
-    path: Assets/Scenes/Phillip's Scenes/LoginFlow/Register.unity
-    guid: 896e7c417f8ac4a949c7d6b952bd2c20
-  - enabled: 1
-    path: Assets/Scenes/Build Scenes/Beta.unity
-    guid: 94d6124b2270f1c4db61536b9fbcd998
+    path: Assets/Scenes/LoginFlow/select level.unity
+    guid: 25451fac33cb1a74d994cda1bc967ece
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: ce03a9ed1876985479bdb263bd51ec4d, type: 2}
