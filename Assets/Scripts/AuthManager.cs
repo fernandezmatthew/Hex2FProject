@@ -152,7 +152,7 @@ public class AuthManager : MonoBehaviour
             //User is now logged in
             //Increment 'junkCollected' by 1
             User = LoginTask.Result;
-            Debug.LogFormat("User signed in successfully: {0} ({1})", User.DisplayName, User.Email);
+            //Debug.LogFormat("User signed in successfully: {0} ({1})", User.DisplayName, User.Email);
             UserInfo.uid = User.UserId;
             /*
             this.reference.Child("users").Child(User.UserId).Child("junkCollected")
@@ -221,6 +221,7 @@ public class AuthManager : MonoBehaviour
 
                 if (User != null)
                 {
+                    UserInfo.uid = User.UserId;
                     //Create a user profile and set the username
                     UserProfile profile = new UserProfile { DisplayName = _username };
 

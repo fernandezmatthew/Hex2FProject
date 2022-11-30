@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Firebase.Database;
+using Firebase.Extensions;
 
 public class LevelManager : MonoBehaviour
 {
@@ -11,6 +13,9 @@ public class LevelManager : MonoBehaviour
     [SerializeField] protected GameObject failureMenuUi;
     [SerializeField] protected GameObject junkCounterUi;
     [SerializeField] protected GameObject timerUi;
+    [SerializeField] protected GameObject bestTimeUi;
+
+    protected DatabaseReference dbRef;
 
     protected PlayerStateMachineBase[] players;
     protected bool isPaused;
@@ -23,6 +28,10 @@ public class LevelManager : MonoBehaviour
     protected float elapsedTime;
     protected string elapsedTimeString;
 
+    // Firebase Variables
+    protected float bestTime;
+    protected string bestTimeString;
+
     //public int TotalJunk { get { return totalJunk; } set { totalJunk = value; } }
     //public int[] JunkCollected { get { return junkCollected; } set { junkCollected = value; } }
 
@@ -32,24 +41,20 @@ public class LevelManager : MonoBehaviour
         levelFailed = false;
         timerEnabled = true;
 
-        // Get UserID from UserInfo object
-        //UserInfo userInfo = FindObjectOfType<UserInfo>();
-        Debug.Log("HERE");
-        Debug.Log(UserInfo.uid);
-        /*
-        if (userInfo != null)
-        {
-            Debug.Log(UserInfo.uid);
-        }
-        else
-        {
-            Debug.Log("NO USER CREATED. DID YOU LOGIN / REFGISTER?");
-        }
-        */
+        // We have UserID from UserInfo object, fetch info
+        // fetch the best time float from database. convert that to a properly formatted string
+        // username
+        // highScore
+        // junkCollected
+
+        // Fetch and display high score
+        bestTime = float.MaxValue;
+        bestTimeString = "Best Time: -- -- ---";
+        StartCoroutine(FetchBestTime());
 
         // Define all timing variables to be 0
         elapsedTime = 0f;
-        elapsedTimeString = null;
+        elapsedTimeString = "00:00.000";
 
         // Find all movement scripts in sceneand store in array. Keep indexes the same as their assigned index
         players = FindObjectsOfType<PlayerStateMachineBase>();
@@ -83,6 +88,27 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    IEnumerator FetchBestTime() {
+        dbRef = FirebaseDatabase.DefaultInstance.RootReference;
+        var task = dbRef.Child("users").Child(UserInfo.uid).Child("highScore").GetValueAsync();
+        yield return new WaitUntil(() => task.IsCompleted);
+        DataSnapshot snapshot = task.Result;
+        bestTime = float.Parse(snapshot.GetValue(false).ToString());
+        // Assign best time and send it to the ui
+        if (bestTime == 0) {
+            bestTimeString = "Best Time: -- -- ---";
+            bestTime = float.MaxValue;
+        }
+        else {
+            bestTimeString = "Best Time: " + ConvertTimeToString(bestTime);
+        }
+        if (bestTimeUi != null) {
+            if (bestTimeUi.GetComponent<TMP_Text>() != null) {
+                bestTimeUi.GetComponent<TMP_Text>().text = bestTimeString;
+            }
+        }
+    }
+
     private void SortPlayers(PlayerStateMachineBase[] players) {
         bool playersSorted = false;
         while (!playersSorted) {
@@ -98,6 +124,35 @@ public class LevelManager : MonoBehaviour
                 playersSorted = true;
             }
         }
+    }
+
+    protected string ConvertTimeToString(float time) {
+        int currentMinutes = (int)time / 60;
+        int currentSeconds = (int)time % 60;
+        int currentMilliseconds = (int)(1000 * time % 1000);
+
+        string currentMinutesString = currentMinutes.ToString();
+        string currentSecondsString = currentSeconds.ToString();
+        string currentMillisecondsString = currentMilliseconds.ToString();
+
+        // print the current time
+        if  (currentMinutes < 10) {
+            currentMinutesString = '0' + currentMinutesString;
+        }
+        if (currentSeconds < 10) {
+            currentSecondsString = '0' + currentSecondsString;
+        }
+        if (currentMilliseconds < 100) {
+            if (currentMilliseconds < 10) {
+                currentMillisecondsString = "00" + currentMillisecondsString;
+            }
+            currentMillisecondsString = '0' + currentMillisecondsString;
+            if (currentMillisecondsString.Length > 3) {
+                currentMillisecondsString = currentMillisecondsString.Substring(1, currentMillisecondsString.Length - 1);
+            }
+        }
+
+        return currentMinutesString + ":" + currentSecondsString + "." + currentMillisecondsString;
     }
 
     protected void UpdateTimer() {
@@ -239,5 +294,23 @@ public class LevelManager : MonoBehaviour
         }
 
         // Do firebase stuff with timeElapsed, junkCollected, inc deaths if levelfailed, etc.
+        // if new highscore
+        if (!levelFailed) {
+            if (elapsedTime < bestTime) {
+                bestTime = elapsedTime;
+                // store to firebase
+                dbRef.Child("users").Child(UserInfo.uid).Child("highScore")
+                    .GetValueAsync().ContinueWithOnMainThread(task => {
+                        dbRef.Child("users").Child(UserInfo.uid).Child("highScore").SetValueAsync(bestTime);
+                    });
+                // update bestScoreUi
+                bestTimeString = ConvertTimeToString(bestTime);
+                if (bestTimeUi != null) {
+                    if (bestTimeUi.GetComponent<TMP_Text>() != null) {
+                        bestTimeUi.GetComponent<TMP_Text>().text = bestTimeString;
+                    }
+                }
+            }
+        }
     }
 }
