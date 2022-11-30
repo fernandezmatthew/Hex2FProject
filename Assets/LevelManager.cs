@@ -116,6 +116,9 @@ public class LevelManager : MonoBehaviour
                     currentMillisecondsString = "00" + currentMillisecondsString;
                 }
                 currentMillisecondsString = '0' + currentMillisecondsString;
+                if (currentMillisecondsString.Length > 3) {
+                    currentMillisecondsString = currentMillisecondsString.Substring(1, currentMillisecondsString.Length - 1);
+                }
             }
 
             elapsedTimeString = currentMinutesString + ":" + currentSecondsString + "." + currentMillisecondsString;
