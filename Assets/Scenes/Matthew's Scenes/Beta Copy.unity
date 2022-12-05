@@ -4663,6 +4663,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 383229730}
     - target: {fileID: 8048040404702803746, guid: 711d087616428fe46aab7f1cb7e886f4, type: 3}
+      propertyPath: levelIndex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8048040404702803746, guid: 711d087616428fe46aab7f1cb7e886f4, type: 3}
       propertyPath: pauseMenuUi
       value: 
       objectReference: {fileID: 1798257264}

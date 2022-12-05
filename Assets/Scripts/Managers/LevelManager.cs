@@ -8,6 +8,8 @@ using Firebase.Extensions;
 
 public class LevelManager : MonoBehaviour
 {
+    public int levelIndex = 0;
+
     [SerializeField] protected GameObject pauseMenuUi;
     [SerializeField] protected GameObject successMenuUi;
     [SerializeField] protected GameObject failureMenuUi;
@@ -90,7 +92,14 @@ public class LevelManager : MonoBehaviour
 
     IEnumerator FetchBestTime() {
         dbRef = FirebaseDatabase.DefaultInstance.RootReference;
-        var task = dbRef.Child("users").Child(UserInfo.uid).Child("highScore").GetValueAsync();
+        string dbVarName;
+        if (levelIndex == 0) {
+            dbVarName = "highScore";
+        }
+        else {
+            dbVarName = "highScore" + (levelIndex + 1).ToString();
+        }
+        var task = dbRef.Child("users").Child(UserInfo.uid).Child(dbVarName).GetValueAsync();
         yield return new WaitUntil(() => task.IsCompleted);
         DataSnapshot snapshot = task.Result;
         bestTime = float.Parse(snapshot.GetValue(false).ToString());
@@ -299,7 +308,14 @@ public class LevelManager : MonoBehaviour
             if (elapsedTime < bestTime) {
                 bestTime = elapsedTime;
                 // store to firebase
-                dbRef.Child("users").Child(UserInfo.uid).Child("highScore")
+                string dbVarName;
+                if (levelIndex == 0) {
+                    dbVarName = "highScore";
+                }
+                else {
+                    dbVarName = "highScore" + (levelIndex + 1).ToString();
+                }
+                dbRef.Child("users").Child(UserInfo.uid).Child(dbVarName)
                     .GetValueAsync().ContinueWithOnMainThread(task => {
                         dbRef.Child("users").Child(UserInfo.uid).Child("highScore").SetValueAsync(bestTime);
                     });
