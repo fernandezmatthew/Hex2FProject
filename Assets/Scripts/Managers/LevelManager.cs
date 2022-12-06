@@ -71,7 +71,6 @@ public class LevelManager : MonoBehaviour
         totalJunk = FindTotalJunk();
         //Debug.Log("Total Junk in Level: " + totalJunk);
         totalJunkCollected = 0;
-
     }
 
     void Update() {
@@ -88,6 +87,11 @@ public class LevelManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void OnDestroy() {
+        // Make sure that timescale is always equal to 1.0f after exiting the level
+        Time.timeScale = 1.0f;
     }
 
     IEnumerator FetchBestTime() {
@@ -315,12 +319,14 @@ public class LevelManager : MonoBehaviour
                 else {
                     dbVarName = "highScore" + (levelIndex + 1).ToString();
                 }
-                dbRef.Child("users").Child(UserInfo.uid).Child(dbVarName)
+                Debug.Log(dbVarName);
+                /*dbRef.Child("users").Child(UserInfo.uid).Child(dbVarName)
                     .GetValueAsync().ContinueWithOnMainThread(task => {
-                        dbRef.Child("users").Child(UserInfo.uid).Child("highScore").SetValueAsync(bestTime);
-                    });
+                        dbRef.Child("users").Child(UserInfo.uid).Child(dbVarName).SetValueAsync(bestTime);
+                    });*/
+                dbRef.Child("users").Child(UserInfo.uid).Child(dbVarName).SetValueAsync(bestTime);
                 // update bestScoreUi
-                bestTimeString = ConvertTimeToString(bestTime);
+                bestTimeString = "Best Time: " + ConvertTimeToString(bestTime);
                 if (bestTimeUi != null) {
                     if (bestTimeUi.GetComponent<TMP_Text>() != null) {
                         bestTimeUi.GetComponent<TMP_Text>().text = bestTimeString;

@@ -37,6 +37,9 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
     //PRIVATES
     /********************************************************************/
 
+    //Testing
+    protected Vector3 teleportTarget;
+
     //Input
     protected Vector2 inputVector;
     protected bool inputJumpButtonPressed;
@@ -84,6 +87,9 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
 
     //GETTERS AND SETTERS
     /********************************************************************/
+
+    //Testing
+    public Vector3 TeleportTarget { get { return teleportTarget; } set { teleportTarget = value; } }
 
     //References
     public CharacterController Controller { get { return controller; } set { controller = value; } }
@@ -153,6 +159,9 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
         if (anim == null) {
             anim = GetComponentInChildren<Animator>();
         }*/
+
+        //Testing
+        teleportTarget = Vector3.zero;
 
         //State Machine
         ePlayerState = EPlayerState.Default;
@@ -534,6 +543,10 @@ public abstract class PlayerStateMachineBase : MonoBehaviour {
     // from a hazard or manager rather than from a state
     public void Die() {
         died = true;
+    }
+
+    public void Teleport(Vector3 target) {
+        teleportTarget = target;
     }
 
     public void DisableMovementInput() {
