@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4077,7 +4077,7 @@ Transform:
   - {fileID: 1451559753}
   - {fileID: 992943776}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1703313066
 GameObject:
@@ -5259,7 +5259,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3625863946814491149, guid: 08f7bd06834cefe4d83181aa6131530b, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3625863946814491149, guid: 08f7bd06834cefe4d83181aa6131530b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5322,6 +5322,10 @@ PrefabInstance:
     - target: {fileID: 2722642009068677951, guid: 75263122be0ae9b47abeb2ed5069dfd0, type: 3}
       propertyPath: EmissionModule.m_BurstCount
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2722642009068677951, guid: 75263122be0ae9b47abeb2ed5069dfd0, type: 3}
+      propertyPath: ShapeModule.radiusThickness
+      value: 1.0000
       objectReference: {fileID: 0}
     - target: {fileID: 2722642009068677951, guid: 75263122be0ae9b47abeb2ed5069dfd0, type: 3}
       propertyPath: EmissionModule.m_Bursts.Array.size
@@ -5494,7 +5498,7 @@ PrefabInstance:
       objectReference: {fileID: 1180999146}
     - target: {fileID: 8048040404702803747, guid: 711d087616428fe46aab7f1cb7e886f4, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8048040404702803747, guid: 711d087616428fe46aab7f1cb7e886f4, type: 3}
       propertyPath: m_LocalPosition.x
