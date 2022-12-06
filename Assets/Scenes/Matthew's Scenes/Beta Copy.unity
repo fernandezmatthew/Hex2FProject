@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1330,8 +1330,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.6142921, y: 1.2666637, z: 8.554005}
-  m_Center: {x: -0.013487968, y: 0.026908437, z: -0.07863066}
+  m_Size: {x: 1, y: 1, z: 8.554005}
+  m_Center: {x: 0, y: 0, z: -0.078630686}
 --- !u!212 &65776526
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1373,8 +1373,8 @@ SpriteRenderer:
   m_SortingLayerID: 1609686285
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: cfcf085fb6cd40d45b9d4341dc62742f, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Color: {r: 0.21002132, g: 0.4797765, b: 0.5377358, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1392,8 +1392,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 65776522}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -15.2, y: 4.33, z: 0.11607}
-  m_LocalScale: {x: 2.4761, y: 2.4761, z: 2.4761}
+  m_LocalPosition: {x: -15.2, y: 4.33, z: 0}
+  m_LocalScale: {x: 5.013351, y: 3.5369506, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -42468,27 +42468,8 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7861733548462516489, guid: a27454c634523424489fc19c2cc649ae, type: 3}
   m_PrefabInstance: {fileID: 786980787}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< Updated upstream
 --- !u!1001 &1799148559
 PrefabInstance:
-=======
-  m_GameObject: {fileID: 1713133710}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1451559753}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -677, y: 262}
-  m_SizeDelta: {x: 269.32, y: 229.85}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1713133712
-MonoBehaviour:
->>>>>>> Stashed changes
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
