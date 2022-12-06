@@ -14,7 +14,7 @@ public class hazard : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-        //   collision.die;
+      collision.gameObject.GetComponent<PlayerStateMachineBase>().Die();
         }
     }
 }
