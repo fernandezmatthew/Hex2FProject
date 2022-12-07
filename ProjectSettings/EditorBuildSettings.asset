@@ -33,7 +33,7 @@ EditorBuildSettings:
     path: Assets/Scenes/LoginFlow/select level.unity
     guid: 25451fac33cb1a74d994cda1bc967ece
   - enabled: 1
-    path: Assets/Scenes/Matthew's Scenes/Main scene 2.unity
-    guid: 2b304b56c2d34424fb6bf9a515b1ba35
+    path: Assets/Scenes/Matthew's Scenes/Level 1.unity
+    guid: 85d6097a25f926243a0669d66b9ff80f
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: ce03a9ed1876985479bdb263bd51ec4d, type: 2}
